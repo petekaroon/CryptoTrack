@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Crypto Portfolio Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="public/stylesheets/index.css">
+  <script src="public/javascripts/index.js"></script>
+</head>
+<body>
+  <header>
+  </header>
+
+  <main>
+    <h1>Crypto Portfolio Tracker</h1>
+    <div id="login" class="hidden">
+      <h3>Log in form</h3>
+      <form action="/login" method="post">
+        <dl>
+            <dt><label for="username">Username:</label></dt>
+            <dd><input type="text" name="username" id="usernamel" required="required" /></dd>
+            <dt><label for="password">Password:</label></dt>
+            <dd><input type="password" name="password" id="passwordl" required="required" /></dd>
+        </dl>
+        <fieldset class="actions"><input type="submit" value="Log In" /></fieldset>
+    </form>
+    <a href="" id="signup-button">Sign up</a>
+    </div>
+
+    <div id="signup" class="hidden">
+      <h3>Sign up form</h3>
+      <form action="/signup" method="post">
+        <dl>
+            <dt><label for="username">Username:</label></dt>
+            <dd><input type="text" name="username" id="usernames" required="required" /></dd>
+            <dt><label for="password">Password:</label></dt>
+            <dd><input type="password" name="password" id="passwords" required="required" /></dd>
+        </dl>
+        <fieldset class="actions"><input type="submit" value="Sign up" /></fieldset>
+    </form>
+    </div>
+
+    <div id="main" class="hidden">
+      <h3>Main Page</h3>
+      <a href="" id="logout-button">Log out</a>
+    </div>
+  </main>
+
+  <footer>
+  </footer>
+</body>
+</html>
