@@ -11,18 +11,18 @@ const config = require('../lib/config');
 const jwt = require('jsonwebtoken');
 const tokenSecret = config.JWT_TOKEN_SECRET;
 
-// @api {post} /signup : Add a new user
-router.post('/signup',
+// @api {post} /register : Add a new user
+router.post('/register',
   catchError(async (req, res) => {
     let newUsername = req.body.username;
     let newPassword = req.body.password;
 
-    const SIGNUP = `INSERT INTO users (username, password) VALUES ($1, $2)`;
+    const REGISTER = `INSERT INTO users (username, password) VALUES ($1, $2)`;
     const FIND_USERNAME = `SELECT * FROM users WHERE username = $1`;
 
     try {
       let hashedPassword = await bcrypt.hash(newPassword, 10);
-      await dbQuery(SIGNUP, newUsername, hashedPassword);
+      await dbQuery(REGISTER, newUsername, hashedPassword);
       let user = await dbQuery(FIND_USERNAME , newUsername);
 
       if (user.rowCount > 0) {
@@ -89,7 +89,7 @@ router.delete('/logout',
 );
 
 router.get('/', verifyToken,
-  catchError(async (req, res) => {
+  catchError((req, res) => {
     try {
       res.status(200).json(res.user);
     } catch (error) {
@@ -97,12 +97,6 @@ router.get('/', verifyToken,
     }
   })
 );
-
-// For testing jwt only -> note that req.username return the username
-router.get('/jwt-test', verifyToken, (req, res) => {
-  res.status(200).json(res.user);
-});
-
 
 function isUniqueConstraintViolation(error) {
   return /duplicate key value violates unique constraint/.test(String(error));

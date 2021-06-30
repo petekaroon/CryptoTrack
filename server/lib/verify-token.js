@@ -7,7 +7,7 @@ function verifyToken (req, res, next) {
 
   try {
     if (!token) {
-      res.status(403).json({ errorMsg: 'No token provided' });
+      res.status(401).json({ errorMsg: 'No token provided' });
     } else {
       let decrypt = jwt.verify(token, tokenSecret);
       res.user = {

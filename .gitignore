@@ -1,3 +1,5 @@
 node_modules
 .eslintrc.yml
 .env
+.DS_Store
+.vscode
