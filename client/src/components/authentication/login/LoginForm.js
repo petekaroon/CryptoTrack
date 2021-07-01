@@ -45,7 +45,7 @@ export default function LoginForm() {
         resetForm();
         if (isMountedRef.current) {
           setSubmitting(false);
-          setErrors({ afterSubmit: error.errorMsg });
+          setErrors({ afterSubmit: error.response.data.message });
         }
       }
     }

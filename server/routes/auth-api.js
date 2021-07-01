@@ -23,16 +23,20 @@ router.post('/register',
     try {
       let hashedPassword = await bcrypt.hash(newPassword, 10);
       await dbQuery(REGISTER, newUsername, hashedPassword);
-      let user = await dbQuery(FIND_USERNAME , newUsername);
+      let result = await dbQuery(FIND_USERNAME , newUsername);
 
-      if (user.rowCount > 0) {
+      if (result.rowCount > 0) {
+        let user = result.rows[0];
         generateToken(res, user.id, user.username);
-        res.status(200).json({ successMsg: 'You are signed in.' });
+        res.status(200).json({
+          id: user.id,
+          username: user.username
+        });
       }
 
     } catch (error) {
       if (isUniqueConstraintViolation(error)) {
-        res.status(404).json({ errorMsg: 'Username is already taken.' });
+        res.status(404).json({ message: 'Username is already taken.' });
       } else {
         res.status(500).json(error);
       }
@@ -52,7 +56,7 @@ router.post('/login',
       let result = await dbQuery(FIND_USERNAME, loginUsername);
 
       if (result.rowCount === 0) {
-        res.status(403).json({ errorMsg: 'Invalid Username' });
+        res.status(403).json({ message: 'Invalid Username' });
       }
 
       let user = result.rows[0];
@@ -66,7 +70,7 @@ router.post('/login',
         });
 
       } else {
-        res.status(403).json({ errorMsg: 'Incorrect Password' });
+        res.status(403).json({ message: 'Incorrect Password' });
       }
 
     } catch (error) {

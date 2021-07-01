@@ -6,7 +6,7 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 // material
-import { Stack, TextField, IconButton, InputAdornment, Alert } from '@material-ui/core';
+import { Stack, TextField, IconButton, InputAdornment, Alert, Button } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
 // hooks
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
@@ -42,7 +42,7 @@ export default function RegisterForm() {
       } catch (error) {
         console.error(error);
         if (isMountedRef.current) {
-          setErrors({ afterSubmit: error.errorMsg });
+          setErrors({ afterSubmit: error.response.data.message });
           setSubmitting(false);
         }
       }
@@ -86,9 +86,20 @@ export default function RegisterForm() {
             helperText={touched.password && errors.password}
           />
 
-          <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+          <LoadingButton fullWidth size="large" sx={{ my: 2 }} type="submit" variant="contained" loading={isSubmitting}>
             Register
           </LoadingButton>
+
+          <Button
+            fullWidth
+            size="large"
+            variant="outlined"
+            onClick={() => {
+              navigate('/auth/login');
+            }}
+          >
+            Cancel
+          </Button>
         </Stack>
       </Form>
     </FormikProvider>
