@@ -73,11 +73,11 @@ export default function Transactions() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Time</TableCell>
+                <TableCell>Date & Time</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Amount</TableCell>
-                <TableCell>Amount ($)</TableCell>
+                <TableCell>Total</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
@@ -85,9 +85,6 @@ export default function Transactions() {
               {INVOICES.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell>{`INV-${row.id}`}</TableCell>
-                  <TableCell>{row.category}</TableCell>
-                  <TableCell>{fCurrency(row.price)}</TableCell>
-                  <TableCell>{fCurrency(row.price)}</TableCell>
                   <TableCell>
                     <Label
                       variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
@@ -100,6 +97,9 @@ export default function Transactions() {
                       {sentenceCase(row.status)}
                     </Label>
                   </TableCell>
+                  <TableCell>{fCurrency(row.price)}</TableCell>
+                  <TableCell>{fCurrency(row.price)}</TableCell>
+                  <TableCell>{fCurrency(row.price)}</TableCell>
                   <TableCell align="right">
                     <AssetMoreMenu />
                   </TableCell>

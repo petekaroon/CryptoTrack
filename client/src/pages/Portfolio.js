@@ -1,4 +1,4 @@
-import { useNavigate, Navigate, Link } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 // material
 import { Container, Typography, Grid, Button } from '@material-ui/core';
 // components
@@ -6,14 +6,16 @@ import Page from '../components/Page';
 import LoadingScreen from '../components/LoadingScreen';
 import { CurrentBalance, TotalProfitLoss, Overview, CryptoAssets, AddTransactionButton } from '../components/portfolio';
 // hooks
-import { useQuery } from '../hooks/useQuery';
+import { useAPI } from '../hooks/useAPI';
 
 // ----------------------------------------------------------------------
 
 export default function Portfolio() {
-  const navigate = useNavigate();
-  const { statusCode, loading, error, data } = useQuery({
-    url: 'http://localhost:8000/auth-api'
+  const { statusCode, loading, error, data } = useAPI({
+    url: 'http://localhost:8000/auth-api', // Need to change to main-api
+    method: 'GET',
+    contentType: null,
+    body: null
   });
 
   if (loading) return <LoadingScreen />;

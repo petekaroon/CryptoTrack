@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useQuery = ({ url }) => {
+export const useAPI = ({ url, method, contentType, body }) => {
   const [statusCode, setStatusCode] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
@@ -8,7 +8,7 @@ export const useQuery = ({ url }) => {
 
   useEffect(() => {
     let isMounted = true;
-    fetch(url, { credentials: 'include' })
+    fetch(url, { method, headers: { 'Content-Type': contentType }, credentials: 'include' }, body)
       .then((response) => {
         if (response.ok) {
           if (isMounted) setStatusCode(response.status);
@@ -28,9 +28,9 @@ export const useQuery = ({ url }) => {
     return () => {
       isMounted = false;
     };
-  }, [url]);
+  }, [url, method, contentType, body]);
 
   return { statusCode, loading, error, data: apiData };
 };
 
-export default { useQuery };
+export default { useAPI };

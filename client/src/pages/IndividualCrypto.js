@@ -30,6 +30,14 @@ export default function IndividualCrypto() {
     return (
       <Page title="BTC | CryptoTrack">
         <Container maxWidth="xl">
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Button size="small" variant="text" onClick={() => navigate('/')}>
+                > Back to Portfolio
+              </Button>
+            </Grid>
+          </Grid>
+
           <Grid container alignItems="flex-start" spacing={3}>
             <Grid item xs={12} sm={8}>
               <Typography variant="h3">Crypto Name</Typography>
@@ -51,17 +59,9 @@ export default function IndividualCrypto() {
 
             <Grid container item spacing={3} xs={12} md={3}>
               <Grid item xs={12}>
-                <CurrentBalance />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TotalProfitLoss />
-              </Grid>
-
-              <Grid item xs={12}>
                 <Button
                   fullWidth
-                  size="large"
+                  size="medium"
                   variant="contained"
                   onClick={() => {
                     navigate('/auth/register');
@@ -69,6 +69,14 @@ export default function IndividualCrypto() {
                 >
                   + Add Transaction
                 </Button>
+              </Grid>
+
+              <Grid item xs={12}>
+                <CurrentBalance />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TotalProfitLoss />
               </Grid>
             </Grid>
 
