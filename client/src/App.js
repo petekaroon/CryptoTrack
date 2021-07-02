@@ -1,3 +1,5 @@
+import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 // routes
 import Router from './routes';
 // theme
@@ -11,7 +13,9 @@ export default function App() {
   return (
     <ThemeConfig>
       <ThemePrimaryColor>
-        <Router />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Router />
+        </LocalizationProvider>
       </ThemePrimaryColor>
     </ThemeConfig>
   );

@@ -77,7 +77,7 @@ export default function ComponentsOverrides(theme) {
     Skeleton(theme),
     Timeline(theme),
     TreeView(theme),
-    Backdrop(theme),
+    // Backdrop(theme),
     Snackbar(theme),
     Progress(theme),
     Checkbox(theme),

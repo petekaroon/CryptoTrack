@@ -1,18 +1,20 @@
-import { useNavigate, Navigate, Link } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 // material
 import { Container, Typography, Grid, Button } from '@material-ui/core';
 // components
 import Page from '../components/Page';
 import LoadingScreen from '../components/LoadingScreen';
-import { CurrentBalance, TotalProfitLoss, Overview, CryptoAssets, AddTransactionButton } from '../components/portfolio';
+import { CurrentBalance, TotalProfitLoss, Transactions } from '../components/individual-crypto';
 // hooks
-import { useQuery } from '../hooks/useQuery';
+import { useVerifyUser } from '../hooks/useVerifyUser';
 
 // ----------------------------------------------------------------------
 
-export default function Portfolio() {
+export default function IndividualCrypto() {
   const navigate = useNavigate();
-  const { statusCode, loading, error, data } = useQuery({
+  const { statusCode, loading, error, user } = useVerifyUser({
     url: 'http://localhost:8000/auth-api'
   });
 
@@ -23,15 +25,15 @@ export default function Portfolio() {
   }
 
   if (statusCode === 200) {
-    console.log(data);
+    console.log(user);
 
     return (
-      <Page title="Portfolio | CryptoTrack">
+      <Page title="BTC | CryptoTrack">
         <Container maxWidth="xl">
-          <Grid container spacing={3}>
+          <Grid container alignItems="flex-start" spacing={3}>
             <Grid item xs={12} sm={8}>
-              <Typography variant="h3">Your Portfolio</Typography>
-              <Typography sx={{ color: 'text.secondary' }}>Track your crypto assets investment.</Typography>
+              <Typography variant="h3">Crypto Name</Typography>
+              <Typography sx={{ color: 'text.secondary' }}>Latest Market Price</Typography>
             </Grid>
 
             <Grid container item xs={12} sm={4}>
@@ -40,21 +42,14 @@ export default function Portfolio() {
                   Last update: 30 Jun 2021 at 20:12
                 </Typography>
               </Grid>
-
               <Grid item xs={12}>
-                <Link to="/1">
-                  <Button fullWidth size="medium" variant="contained">
-                    Update Latest Price
-                  </Button>
-                </Link>
+                <Button fullWidth size="medium" variant="contained">
+                  Update Latest Price
+                </Button>
               </Grid>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <Overview />
-            </Grid>
-
-            <Grid container spacing={3} item xs={12} sm={6}>
+            <Grid container item spacing={3} xs={12} md={3}>
               <Grid item xs={12}>
                 <CurrentBalance />
               </Grid>
@@ -64,15 +59,21 @@ export default function Portfolio() {
               </Grid>
 
               <Grid item xs={12}>
-                {/* <Button fullWidth size="large" variant="contained" onClick={() => <AddTransactionModal />}>
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  onClick={() => {
+                    navigate('/auth/register');
+                  }}
+                >
                   + Add Transaction
-                </Button> */}
-                <AddTransactionButton />
+                </Button>
               </Grid>
             </Grid>
 
-            <Grid item xs={12}>
-              <CryptoAssets />
+            <Grid item xs={12} md={9}>
+              <Transactions />
             </Grid>
           </Grid>
         </Container>
