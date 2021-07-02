@@ -44,17 +44,6 @@ export default function AssetMoreMenu({ onDelete, productName }) {
           </ListItemIcon>
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-
-        <MenuItem
-        // component={RouterLink}
-        // to={`${PATH_DASHBOARD.eCommerce.root}/product/${paramCase(productName)}/edit`}
-        // sx={{ color: 'text.secondary' }}
-        >
-          <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
       </Menu>
     </>
   );

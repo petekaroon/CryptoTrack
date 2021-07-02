@@ -8,14 +8,17 @@ import Page from '../components/Page';
 import LoadingScreen from '../components/LoadingScreen';
 import { CurrentBalance, TotalProfitLoss, Transactions } from '../components/individual-crypto';
 // hooks
-import { useVerifyUser } from '../hooks/useVerifyUser';
+import { useAPI } from '../hooks/useAPI';
 
 // ----------------------------------------------------------------------
 
 export default function IndividualCrypto() {
   const navigate = useNavigate();
-  const { statusCode, loading, error, user } = useVerifyUser({
-    url: 'http://localhost:8000/auth-api'
+  const { statusCode, loading, error, data } = useAPI({
+    url: 'http://localhost:8000/main-api',
+    method: 'GET',
+    contentType: null,
+    body: null
   });
 
   if (loading) return <LoadingScreen />;
@@ -25,7 +28,7 @@ export default function IndividualCrypto() {
   }
 
   if (statusCode === 200) {
-    console.log(user);
+    console.log(data);
 
     return (
       <Page title="BTC | CryptoTrack">

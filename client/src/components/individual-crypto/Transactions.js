@@ -23,7 +23,7 @@ import { fCurrency } from '../../utils/formatNumber';
 //
 import Label from '../Label';
 import Scrollbar from '../Scrollbar';
-import AssetMoreMenu from '../AssetMoreMenu';
+import AssetMoreMenu from '../portfolio/AssetMoreMenu';
 
 // ----------------------------------------------------------------------
 

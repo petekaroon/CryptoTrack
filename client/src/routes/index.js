@@ -29,8 +29,8 @@ export default function Router() {
       children: [
         { path: '/', element: <Portfolio /> },
         { path: '/:crypto_id', element: <IndividualCrypto /> },
-        { path: '404', element: <NotFound /> },
-        { path: '*', element: <Navigate to="/404" replace /> }
+        { path: 'page404', element: <NotFound /> },
+        { path: '*', element: <Navigate to="/page404" replace /> }
       ]
     }
   ]);

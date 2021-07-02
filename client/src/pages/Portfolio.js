@@ -1,8 +1,10 @@
+/* eslint-disable prefer-const */
 import { Navigate, Link } from 'react-router-dom';
 // material
 import { Container, Typography, Grid, Button } from '@material-ui/core';
 // components
 import Page from '../components/Page';
+import Page404 from './Page404';
 import LoadingScreen from '../components/LoadingScreen';
 import { CurrentBalance, TotalProfitLoss, Overview, CryptoAssets, AddTransactionButton } from '../components/portfolio';
 // hooks
@@ -11,21 +13,41 @@ import { useAPI } from '../hooks/useAPI';
 // ----------------------------------------------------------------------
 
 export default function Portfolio() {
-  const { statusCode, loading, error, data } = useAPI({
-    url: 'http://localhost:8000/auth-api', // Need to change to main-api
+  let {
+    statusCode: mainApiStatusCode,
+    loading: mainApiLoading,
+    error: mainApiError,
+    data: mainApiData
+  } = useAPI({
+    url: 'http://localhost:8000/main-api/',
     method: 'GET',
     contentType: null,
     body: null
   });
 
-  if (loading) return <LoadingScreen />;
+  let {
+    statusCode: coinApiStatusCode,
+    loading: coinApiLoading,
+    error: coinApiError,
+    data: coinApiData
+  } = useAPI({
+    url: 'http://localhost:8000/main-api/1',
+    method: 'GET',
+    contentType: null,
+    body: null
+  });
 
-  if (error && error.status === 401) {
+  if (mainApiLoading || coinApiLoading) return <LoadingScreen />;
+
+  if ((mainApiError && mainApiError.status === 401) || (coinApiError && coinApiError.status === 401)) {
     return <Navigate to="/auth/login" />;
   }
 
-  if (statusCode === 200) {
-    console.log(data);
+  if (mainApiStatusCode === 200 && coinApiStatusCode === 200) {
+    mainApiData = convertToArray(mainApiData);
+    coinApiData = convertToArray(coinApiData);
+    console.log(mainApiData);
+    console.log(coinApiData);
 
     return (
       <Page title="Portfolio | CryptoTrack">
@@ -66,19 +88,22 @@ export default function Portfolio() {
               </Grid>
 
               <Grid item xs={12}>
-                {/* <Button fullWidth size="large" variant="contained" onClick={() => <AddTransactionModal />}>
-                  + Add Transaction
-                </Button> */}
                 <AddTransactionButton />
               </Grid>
             </Grid>
 
             <Grid item xs={12}>
-              <CryptoAssets />
+              <CryptoAssets mainApiData={mainApiData} coinApiData={coinApiData} />
             </Grid>
           </Grid>
         </Container>
       </Page>
     );
   }
+
+  return <Page404 />;
+}
+
+function convertToArray(objectOfObjects) {
+  return Object.entries(objectOfObjects).map((key) => ({ ...key[1] }));
 }

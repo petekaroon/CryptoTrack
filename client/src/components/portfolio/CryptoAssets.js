@@ -1,4 +1,5 @@
 import faker from 'faker';
+import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { Link as RouterLink } from 'react-router-dom';
@@ -15,6 +16,7 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  Typography,
   CardHeader,
   TableContainer
 } from '@material-ui/core';
@@ -23,7 +25,7 @@ import { fCurrency } from '../../utils/formatNumber';
 //
 import Label from '../Label';
 import Scrollbar from '../Scrollbar';
-import AssetMoreMenu from '../AssetMoreMenu';
+import AssetMoreMenu from './AssetMoreMenu';
 
 // ----------------------------------------------------------------------
 
@@ -62,8 +64,13 @@ const INVOICES = [
 
 // ----------------------------------------------------------------------
 
-export default function CryptoAssets() {
+CryptoAssets.propTypes = {
+  mainApiData: PropTypes.array
+};
+
+export default function CryptoAssets(props) {
   const theme = useTheme();
+  const { mainApiData, coinApiData } = props;
 
   return (
     <Card>
@@ -73,10 +80,10 @@ export default function CryptoAssets() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Price</TableCell>
+                <TableCell>Asset</TableCell>
+                <TableCell>Current Price</TableCell>
                 <TableCell>Holdings</TableCell>
-                <TableCell>Holdings ($)</TableCell>
+                <TableCell>Current Value</TableCell>
                 <TableCell>Avg. Buy Price</TableCell>
                 <TableCell>Profit/Loss</TableCell>
                 <TableCell>%</TableCell>
@@ -84,26 +91,29 @@ export default function CryptoAssets() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {INVOICES.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>{`INV-${row.id}`}</TableCell>
-                  <TableCell>{row.category}</TableCell>
-                  <TableCell>{fCurrency(row.price)}</TableCell>
-                  <TableCell>{fCurrency(row.price)}</TableCell>
-                  <TableCell>{fCurrency(row.price)}</TableCell>
-                  <TableCell>{fCurrency(row.price)}</TableCell>
+              {mainApiData.map((crypto) => (
+                <TableRow key={crypto.cryptoId}>
                   <TableCell>
+                    <Typography fontWeight="fontWeightBold">{`${crypto.name} : ${crypto.symbol}`}</Typography>
+                  </TableCell>
+                  <TableCell>{fCurrency(crypto.cryptoId)}</TableCell>
+                  <TableCell>{`${crypto.cryptoId} ${crypto.symbol}`}</TableCell>
+                  <TableCell>{fCurrency(crypto.holdingQty)}</TableCell>
+                  <TableCell>{fCurrency(crypto.avgBuyPrice)}</TableCell>
+                  <TableCell>{fCurrency(crypto.cryptoId)}</TableCell>
+                  <TableCell>{`${crypto.cryptoId} %`}</TableCell>
+                  {/* <TableCell>
                     <Label
                       variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
                       color={
-                        (row.status === 'in_progress' && 'warning') ||
-                        (row.status === 'out_of_date' && 'error') ||
+                        (crypto.status === 'in_progress' && 'warning') ||
+                        (crypto.status === 'out_of_date' && 'error') ||
                         'success'
                       }
                     >
-                      {sentenceCase(row.status)}
+                      {sentenceCase(crypto.status)}
                     </Label>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell align="right">
                     <AssetMoreMenu />
                   </TableCell>
@@ -113,20 +123,6 @@ export default function CryptoAssets() {
           </Table>
         </TableContainer>
       </Scrollbar>
-
-      <Divider />
-
-      <Box sx={{ p: 2, textAlign: 'right' }}>
-        <Button
-          to="#"
-          size="small"
-          color="inherit"
-          component={RouterLink}
-          endIcon={<Icon icon={arrowIosForwardFill} />}
-        >
-          View All
-        </Button>
-      </Box>
     </Card>
   );
 }
