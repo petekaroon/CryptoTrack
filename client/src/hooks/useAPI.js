@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useAPI = ({ url, method, contentType, body }) => {
+export const useAPI = ({ url, method, contentType, credentials, body }) => {
   const [statusCode, setStatusCode] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
@@ -8,7 +8,7 @@ export const useAPI = ({ url, method, contentType, body }) => {
 
   useEffect(() => {
     let isMounted = true;
-    fetch(url, { method, headers: { 'Content-Type': contentType }, credentials: 'include' }, body)
+    fetch(url, { method, headers: { 'Content-Type': contentType }, credentials }, body)
       .then((response) => {
         if (response.ok) {
           if (isMounted) setStatusCode(response.status);
@@ -28,7 +28,7 @@ export const useAPI = ({ url, method, contentType, body }) => {
     return () => {
       isMounted = false;
     };
-  }, [url, method, contentType, body]);
+  }, [url, method, contentType, body, credentials]);
 
   return { statusCode, loading, error, data: apiData };
 };

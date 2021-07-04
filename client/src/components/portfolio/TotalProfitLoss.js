@@ -1,12 +1,12 @@
+import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import ReactApexChart from 'react-apexcharts';
 import trendingUpFill from '@iconify/icons-eva/trending-up-fill';
 import trendingDownFill from '@iconify/icons-eva/trending-down-fill';
 // material
 import { alpha, useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
 import { Box, Card, Typography, Stack } from '@material-ui/core';
 // utils
-import { fNumber, fPercent } from '../../utils/formatNumber';
+import { fPercent, fCurrency } from '../../utils/formatNumber';
 
 // ----------------------------------------------------------------------
 
@@ -23,55 +23,61 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const PERCENT = 2.6;
-const TOTAL_USER = 18765;
-const CHART_DATA = [{ data: [2532, 6632, 4132, 8932, 6332, 2532, 4432, 1232, 3632, 932, 3354] }];
+TotalProfitLoss.propTypes = {
+  mainApiData: PropTypes.array,
+  coinApiData: PropTypes.array
+};
 
-export default function TotalProfitLoss() {
+export default function TotalProfitLoss(props) {
   const theme = useTheme();
+  const { mainApiData, coinApiData } = props;
 
-  const chartOptions = {
-    colors: [theme.palette.primary.main],
-    chart: { sparkline: { enabled: true } },
-    plotOptions: { bar: { columnWidth: '68%', borderRadius: 2 } },
-    labels: ['1', '2', '3', '4', '5', '6', '7', '8'],
-    tooltip: {
-      x: { show: false },
-      y: {
-        formatter: (seriesName) => fNumber(seriesName),
-        title: {
-          formatter: (seriesName) => `#${seriesName}`
-        }
-      },
-      marker: { show: false }
-    }
-  };
+  function getCurrentPrice(crypto) {
+    return coinApiData.filter((coin) => coin.slug === crypto.name.toLowerCase()).map((coin) => coin.usd);
+  }
+
+  function getHoldingsValue(crypto) {
+    return crypto.holdingQty * getCurrentPrice(crypto);
+  }
+
+  function getProfitLoss(crypto) {
+    // eslint-disable-next-line prettier/prettier
+    return getHoldingsValue(crypto) + (crypto.totalSellQty * crypto.avgSellPrice) -
+      (crypto.totalBuyQty * crypto.avgBuyPrice);
+  }
+
+  // eslint-disable-next-line prettier/prettier
+  const totalBuyValue = mainApiData.reduce((sum, crypto) => sum + (crypto.totalBuyQty * crypto.avgBuyPrice), 0);
+
+  const totalProfitLoss = mainApiData.reduce((sum, crypto) => sum + getProfitLoss(crypto), 0);
+  const percentageTotalProfitLoss = 100 * (totalProfitLoss / totalBuyValue);
 
   return (
     <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
       <Box sx={{ flexGrow: 1 }}>
         <Typography variant="h6">Total Profit/Loss</Typography>
+
         <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2, mb: 1 }}>
           <IconWrapperStyle
             sx={{
-              ...(PERCENT < 0 && {
+              ...(percentageTotalProfitLoss < 0 && {
                 color: 'error.main',
                 bgcolor: alpha(theme.palette.error.main, 0.16)
               })
             }}
           >
-            <Icon width={16} height={16} icon={PERCENT >= 0 ? trendingUpFill : trendingDownFill} />
+            <Icon width={16} height={16} icon={percentageTotalProfitLoss >= 0 ? trendingUpFill : trendingDownFill} />
           </IconWrapperStyle>
-          <Typography component="span" variant="subtitle2">
-            {PERCENT > 0 && '+'}
-            {fPercent(PERCENT)}
+          <Typography component="span" variant="subtitle2" color={percentageTotalProfitLoss >= 0 ? 'primary' : 'error'}>
+            {percentageTotalProfitLoss > 0 && '+'}
+            {fPercent(percentageTotalProfitLoss)}
           </Typography>
         </Stack>
 
-        <Typography variant="h3">{fNumber(TOTAL_USER)}</Typography>
+        <Typography variant="h3" color={totalProfitLoss >= 0 ? 'primary' : 'error'}>
+          {totalProfitLoss >= 0 ? `+${fCurrency(totalProfitLoss)}` : fCurrency(totalProfitLoss)}
+        </Typography>
       </Box>
-
-      <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} width={60} height={36} />
     </Card>
   );
 }

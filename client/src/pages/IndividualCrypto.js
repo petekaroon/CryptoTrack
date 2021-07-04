@@ -18,6 +18,7 @@ export default function IndividualCrypto() {
     url: 'http://localhost:8000/main-api',
     method: 'GET',
     contentType: null,
+    credentials: 'include',
     body: null
   });
 
@@ -36,7 +37,7 @@ export default function IndividualCrypto() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Button size="small" variant="text" onClick={() => navigate('/')}>
-                > Back to Portfolio
+                &lt; Back to Portfolio
               </Button>
             </Grid>
           </Grid>

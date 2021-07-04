@@ -12,6 +12,24 @@ import { useAPI } from '../hooks/useAPI';
 
 // ----------------------------------------------------------------------
 
+const supportedCryptoList = ['bitcoin', 'ethereum', 'tether'];
+
+function getCoinGeckoUrl(supportedCryptoList) {
+  const baseUrl = new URL('https://api.coingecko.com/api/v3/simple/price');
+  const cryptoListStr = supportedCryptoList.join('%2C');
+
+  return `${baseUrl}?ids=${cryptoListStr}&vs_currencies=usd`;
+}
+
+function convertToArray(obj) {
+  return Object.entries(obj).map((key) => ({ ...key[1] }));
+}
+
+function convertCollection(obj) {
+  let keys = Object.keys(obj);
+  return keys.map((key) => ({ slug: key, ...obj[key] }));
+}
+
 export default function Portfolio() {
   let {
     statusCode: mainApiStatusCode,
@@ -22,6 +40,7 @@ export default function Portfolio() {
     url: 'http://localhost:8000/main-api/',
     method: 'GET',
     contentType: null,
+    credentials: 'include',
     body: null
   });
 
@@ -31,9 +50,10 @@ export default function Portfolio() {
     error: coinApiError,
     data: coinApiData
   } = useAPI({
-    url: 'http://localhost:8000/main-api/1',
+    url: getCoinGeckoUrl(supportedCryptoList),
     method: 'GET',
     contentType: null,
+    credentials: 'same-origin',
     body: null
   });
 
@@ -45,7 +65,7 @@ export default function Portfolio() {
 
   if (mainApiStatusCode === 200 && coinApiStatusCode === 200) {
     mainApiData = convertToArray(mainApiData);
-    coinApiData = convertToArray(coinApiData);
+    coinApiData = convertCollection(coinApiData);
     console.log(mainApiData);
     console.log(coinApiData);
 
@@ -61,7 +81,7 @@ export default function Portfolio() {
             <Grid container item xs={12} sm={4}>
               <Grid item xs={12}>
                 <Typography paragraph align="center" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                  Last update: 30 Jun 2021 at 20:12
+                  {`Last update: ${new Date().toLocaleString()}`}
                 </Typography>
               </Grid>
 
@@ -75,16 +95,16 @@ export default function Portfolio() {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <Overview />
+              <Overview mainApiData={mainApiData} coinApiData={coinApiData} />
             </Grid>
 
             <Grid container spacing={3} item xs={12} sm={6}>
               <Grid item xs={12}>
-                <CurrentBalance />
+                <CurrentBalance mainApiData={mainApiData} coinApiData={coinApiData} />
               </Grid>
 
               <Grid item xs={12}>
-                <TotalProfitLoss />
+                <TotalProfitLoss mainApiData={mainApiData} coinApiData={coinApiData} />
               </Grid>
 
               <Grid item xs={12}>
@@ -102,8 +122,4 @@ export default function Portfolio() {
   }
 
   return <Page404 />;
-}
-
-function convertToArray(objectOfObjects) {
-  return Object.entries(objectOfObjects).map((key) => ({ ...key[1] }));
 }

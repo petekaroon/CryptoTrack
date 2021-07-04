@@ -21,7 +21,7 @@ import {
   TableContainer
 } from '@material-ui/core';
 // utils
-import { fCurrency } from '../../utils/formatNumber';
+import { fCurrency, fPercent, fNumber } from '../../utils/formatNumber';
 //
 import Label from '../Label';
 import Scrollbar from '../Scrollbar';
@@ -29,48 +29,32 @@ import AssetMoreMenu from './AssetMoreMenu';
 
 // ----------------------------------------------------------------------
 
-const INVOICES = [
-  {
-    id: faker.datatype.uuid(),
-    category: 'Android',
-    price: faker.finance.amount(),
-    status: 'in_progress'
-  },
-  {
-    id: faker.datatype.uuid(),
-    category: 'Windows',
-    price: faker.finance.amount(),
-    status: 'paid'
-  },
-  {
-    id: faker.datatype.uuid(),
-    category: 'Mac',
-    price: faker.finance.amount(),
-    status: 'out_of_date'
-  },
-  {
-    id: faker.datatype.uuid(),
-    category: 'Windows',
-    price: faker.finance.amount(),
-    status: 'paid'
-  },
-  {
-    id: faker.datatype.uuid(),
-    category: 'Windows',
-    price: faker.finance.amount(),
-    status: 'in_progress'
-  }
-];
-
-// ----------------------------------------------------------------------
-
 CryptoAssets.propTypes = {
-  mainApiData: PropTypes.array
+  mainApiData: PropTypes.array,
+  coinApiData: PropTypes.array
 };
 
 export default function CryptoAssets(props) {
   const theme = useTheme();
   const { mainApiData, coinApiData } = props;
+
+  function getCurrentPrice(crypto) {
+    return coinApiData.filter((coin) => coin.slug === crypto.name.toLowerCase()).map((coin) => coin.usd);
+  }
+
+  function getHoldingsValue(crypto) {
+    return crypto.holdingQty * getCurrentPrice(crypto);
+  }
+
+  function getProfitLoss(crypto) {
+    // eslint-disable-next-line prettier/prettier
+    return getHoldingsValue(crypto) + (crypto.totalSellQty * crypto.avgSellPrice) -
+      (crypto.totalBuyQty * crypto.avgBuyPrice);
+  }
+
+  function getPercentageProfitLoss(crypto) {
+    return 100 * (getProfitLoss(crypto) / (crypto.totalBuyQty * crypto.avgBuyPrice));
+  }
 
   return (
     <Card>
@@ -81,12 +65,12 @@ export default function CryptoAssets(props) {
             <TableHead>
               <TableRow>
                 <TableCell>Asset</TableCell>
-                <TableCell>Current Price</TableCell>
-                <TableCell>Holdings</TableCell>
-                <TableCell>Current Value</TableCell>
-                <TableCell>Avg. Buy Price</TableCell>
-                <TableCell>Profit/Loss</TableCell>
-                <TableCell>%</TableCell>
+                <TableCell align="right">Current Price</TableCell>
+                <TableCell align="right">Holdings</TableCell>
+                <TableCell align="right">Holdings Value</TableCell>
+                <TableCell align="right">Avg. Buy Price</TableCell>
+                <TableCell align="right">Profit/Loss</TableCell>
+                <TableCell align="right">%</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
@@ -96,24 +80,41 @@ export default function CryptoAssets(props) {
                   <TableCell>
                     <Typography fontWeight="fontWeightBold">{`${crypto.name} : ${crypto.symbol}`}</Typography>
                   </TableCell>
-                  <TableCell>{fCurrency(crypto.cryptoId)}</TableCell>
-                  <TableCell>{`${crypto.cryptoId} ${crypto.symbol}`}</TableCell>
-                  <TableCell>{fCurrency(crypto.holdingQty)}</TableCell>
-                  <TableCell>{fCurrency(crypto.avgBuyPrice)}</TableCell>
-                  <TableCell>{fCurrency(crypto.cryptoId)}</TableCell>
-                  <TableCell>{`${crypto.cryptoId} %`}</TableCell>
-                  {/* <TableCell>
+                  <TableCell align="right">{fCurrency(getCurrentPrice(crypto))}</TableCell>
+                  <TableCell align="right">{`${fNumber(crypto.holdingQty)} ${crypto.symbol}`}</TableCell>
+                  <TableCell align="right">{fCurrency(getHoldingsValue(crypto))}</TableCell>
+                  <TableCell align="right">{fCurrency(crypto.avgBuyPrice)}</TableCell>
+
+                  <TableCell align="right">
                     <Label
                       variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
                       color={
-                        (crypto.status === 'in_progress' && 'warning') ||
-                        (crypto.status === 'out_of_date' && 'error') ||
+                        (getProfitLoss(crypto) === 0 && 'warning') ||
+                        (getProfitLoss(crypto) < 0 && 'error') ||
                         'success'
                       }
                     >
-                      {sentenceCase(crypto.status)}
+                      {getProfitLoss(crypto) >= 0
+                        ? `+${fCurrency(getProfitLoss(crypto))}`
+                        : fCurrency(getProfitLoss(crypto))}
                     </Label>
-                  </TableCell> */}
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <Label
+                      variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                      color={
+                        (getPercentageProfitLoss(crypto) === 0 && 'warning') ||
+                        (getPercentageProfitLoss(crypto) < 0 && 'error') ||
+                        'success'
+                      }
+                    >
+                      {getPercentageProfitLoss(crypto) >= 0
+                        ? `+${fPercent(getPercentageProfitLoss(crypto))}`
+                        : fPercent(getPercentageProfitLoss(crypto))}
+                    </Label>
+                  </TableCell>
+
                   <TableCell align="right">
                     <AssetMoreMenu />
                   </TableCell>

@@ -1,21 +1,22 @@
 import { merge } from 'lodash';
 import ReactApexChart from 'react-apexcharts';
+import PropTypes from 'prop-types';
 // material
 import { useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
 import { Card, CardHeader } from '@material-ui/core';
 // utils
-import { fNumber } from '../../utils/formatNumber';
+import { fCurrency, fPercent } from '../../utils/formatNumber';
 //
 import { BaseOptionChart } from '../charts';
 
 // ----------------------------------------------------------------------
 
-const CHART_HEIGHT = 360;
+const CHART_HEIGHT = 340;
 const LEGEND_HEIGHT = 50;
 
 const ChartWrapperStyle = styled('div')(({ theme }) => ({
   height: CHART_HEIGHT,
-  marginTop: theme.spacing(3),
+  marginTop: theme.spacing(1),
   '& .apexcharts-canvas svg': { height: CHART_HEIGHT },
   '& .apexcharts-canvas svg,.apexcharts-canvas foreignObject': {
     overflow: 'visible'
@@ -31,27 +32,37 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [12244, 53345, 44313, 78343];
+Overview.propTypes = {
+  mainApiData: PropTypes.array,
+  coinApiData: PropTypes.array
+};
 
-export default function Overview() {
+export default function Overview(props) {
   const theme = useTheme();
+  const { mainApiData, coinApiData } = props;
+
+  function getCurrentPrice(crypto) {
+    return coinApiData.filter((coin) => coin.slug === crypto.name.toLowerCase()).map((coin) => coin.usd);
+  }
+
+  function getHoldingsValue(crypto) {
+    return crypto.holdingQty * getCurrentPrice(crypto);
+  }
+
+  const currentBalance = mainApiData.reduce((sum, crypto) => sum + getHoldingsValue(crypto), 0);
+  const labels = mainApiData.map((crypto) => crypto.name);
+  const holdingData = mainApiData.map((crypto) => getHoldingsValue(crypto));
 
   const chartOptions = merge(BaseOptionChart(), {
-    colors: [
-      theme.palette.primary.lighter,
-      theme.palette.primary.light,
-      theme.palette.primary.main,
-      theme.palette.primary.dark
-    ],
-    labels: ['Mac', 'Window', 'iOS', 'Android'],
+    labels,
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: 'center' },
     tooltip: {
       fillSeriesColor: false,
       y: {
-        formatter: (seriesName) => fNumber(seriesName),
+        formatter: (val) => fPercent(100 * (val / currentBalance)),
         title: {
-          formatter: (seriesName) => `#${seriesName}`
+          formatter: (seriesName) => `${seriesName} :`
         }
       }
     },
@@ -61,12 +72,12 @@ export default function Overview() {
           size: '90%',
           labels: {
             value: {
-              formatter: (val) => fNumber(val)
+              formatter: (val) => fCurrency(val)
             },
             total: {
               formatter: (w) => {
                 const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                return fNumber(sum);
+                return fCurrency(sum);
               }
             }
           }
@@ -79,7 +90,7 @@ export default function Overview() {
     <Card>
       <CardHeader title="Overview" />
       <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="donut" series={CHART_DATA} options={chartOptions} height={280} />
+        <ReactApexChart type="donut" series={holdingData} options={chartOptions} height={280} />
       </ChartWrapperStyle>
     </Card>
   );

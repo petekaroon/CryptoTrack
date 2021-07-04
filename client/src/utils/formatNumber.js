@@ -4,15 +4,20 @@ import numeral from 'numeral';
 // ----------------------------------------------------------------------
 
 export function fCurrency(number) {
-  return numeral(number).format(Number.isInteger(number) ? '$0,0' : '$0,0.00');
+  if (Math.abs(number) < 10) return numeral(number).format('$ 0,0.0000');
+  if (Math.abs(number) < 10000) return numeral(number).format('$ 0,0.00');
+  return numeral(number).format('$ 0,0');
 }
 
 export function fPercent(number) {
-  return numeral(number / 100).format('0.0%');
+  return numeral(number / 100).format('0.0 %');
 }
 
 export function fNumber(number) {
-  return numeral(number).format();
+  if (Math.abs(number) < 0.01) return numeral(number).format('0,0.000000');
+  if (Math.abs(number) < 1) return numeral(number).format('0,0.0000');
+  if (Math.abs(number) < 1000) return numeral(number).format('0,0.00');
+  return numeral(number).format('0,0');
 }
 
 export function fShortenNumber(number) {
