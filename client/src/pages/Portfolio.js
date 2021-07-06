@@ -1,5 +1,7 @@
 /* eslint-disable prefer-const */
-import { Navigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 // material
 import { Container, Typography, Grid, Button } from '@material-ui/core';
 // components
@@ -7,23 +9,10 @@ import Page from '../components/Page';
 import Page404 from './Page404';
 import LoadingScreen from '../components/LoadingScreen';
 import { CurrentBalance, TotalProfitLoss, Overview, CryptoAssets, AddTransactionButton } from '../components/portfolio';
-// hooks
-import { useAPI } from '../hooks/useAPI';
+// api
+import { loadPortfolio } from '../api/Main';
 
 // ----------------------------------------------------------------------
-
-const supportedCryptoList = ['bitcoin', 'ethereum', 'tether'];
-
-function getCoinGeckoUrl(supportedCryptoList) {
-  const baseUrl = new URL('https://api.coingecko.com/api/v3/simple/price');
-  const cryptoListStr = supportedCryptoList.join('%2C');
-
-  return `${baseUrl}?ids=${cryptoListStr}&vs_currencies=usd`;
-}
-
-function convertToArray(obj) {
-  return Object.entries(obj).map((key) => ({ ...key[1] }));
-}
 
 function convertCollection(obj) {
   let keys = Object.keys(obj);
@@ -31,95 +20,113 @@ function convertCollection(obj) {
 }
 
 export default function Portfolio() {
-  let {
-    statusCode: mainApiStatusCode,
-    loading: mainApiLoading,
-    error: mainApiError,
-    data: mainApiData
-  } = useAPI({
-    url: 'http://localhost:8000/main-api/',
-    method: 'GET',
-    contentType: null,
-    credentials: 'include',
-    body: null
-  });
+  const navigate = useNavigate();
+  const [mainApiStatusCode, setMainApiStatusCode] = useState();
+  const [coinApiStatusCode, setCoinApiStatusCode] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
+  const [mainApiData, setMainApiData] = useState();
+  const [coinApiData, setCoinApiData] = useState();
+  const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleString());
 
-  let {
-    statusCode: coinApiStatusCode,
-    loading: coinApiLoading,
-    error: coinApiError,
-    data: coinApiData
-  } = useAPI({
-    url: getCoinGeckoUrl(supportedCryptoList),
-    method: 'GET',
-    contentType: null,
-    credentials: 'same-origin',
-    body: null
-  });
+  const handleSetLastUpdate = () => {
+    setLastUpdate(new Date().toLocaleString());
+  };
 
-  if (mainApiLoading || coinApiLoading) return <LoadingScreen />;
+  useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
+      setError(null);
+      setLoading(true);
 
-  if ((mainApiError && mainApiError.status === 401) || (coinApiError && coinApiError.status === 401)) {
-    return <Navigate to="/auth/login" />;
-  }
+      try {
+        const { mainApiResponse, coinApiResponse } = await loadPortfolio();
 
-  if (mainApiStatusCode === 200 && coinApiStatusCode === 200) {
-    mainApiData = convertToArray(mainApiData);
-    coinApiData = convertCollection(coinApiData);
-    console.log(mainApiData);
-    console.log(coinApiData);
+        if (isMounted) {
+          setMainApiData(mainApiResponse.data);
+          setCoinApiData(convertCollection(coinApiResponse.data));
+          setMainApiStatusCode(mainApiResponse.status);
+          setCoinApiStatusCode(coinApiResponse.status);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setError(error.response);
+        }
+      }
 
-    return (
-      <Page title="Portfolio | CryptoTrack">
-        <Container maxWidth="xl">
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={8}>
-              <Typography variant="h3">Your Portfolio</Typography>
-              <Typography sx={{ color: 'text.secondary' }}>Track your crypto assets investment.</Typography>
-            </Grid>
+      if (isMounted) setLoading(false);
+    };
 
-            <Grid container item xs={12} sm={4}>
-              <Grid item xs={12}>
-                <Typography paragraph align="center" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                  {`Last update: ${new Date().toLocaleString()}`}
-                </Typography>
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [lastUpdate]);
+
+  return (
+    <>
+      {(!mainApiData || !coinApiData) && <LoadingScreen />}
+      {error && error.status === 401 && <Navigate to="/auth/login" />}
+      {error && error.status !== 401 && <Navigate to="/page404" />}
+
+      {mainApiStatusCode === 200 && coinApiStatusCode === 200 && (
+        <Page title="Portfolio | CryptoTrack">
+          <Container maxWidth="xl">
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="h3">Your Portfolio</Typography>
+                <Typography sx={{ color: 'text.secondary' }}>Track your crypto assets investment.</Typography>
               </Grid>
 
-              <Grid item xs={12}>
-                <Link to="/1">
-                  <Button fullWidth size="medium" variant="contained">
+              <Grid container item xs={12} sm={4}>
+                <Grid item xs={12}>
+                  <Typography paragraph align="center" variant="subtitle2" sx={{ color: 'text.secondary' }}>
+                    {`Last update: ${lastUpdate}`}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    size="medium"
+                    variant="contained"
+                    onClick={() => setLastUpdate(new Date().toLocaleString())}
+                  >
                     Update Latest Price
                   </Button>
-                </Link>
+                </Grid>
               </Grid>
-            </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <Overview mainApiData={mainApiData} coinApiData={coinApiData} />
-            </Grid>
+              <Grid item xs={12} sm={6}>
+                <Overview mainApiData={mainApiData} coinApiData={coinApiData} />
+              </Grid>
 
-            <Grid container spacing={3} item xs={12} sm={6}>
+              <Grid container spacing={3} item xs={12} sm={6}>
+                <Grid item xs={12}>
+                  <CurrentBalance mainApiData={mainApiData} coinApiData={coinApiData} />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TotalProfitLoss mainApiData={mainApiData} coinApiData={coinApiData} />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <AddTransactionButton />
+                </Grid>
+              </Grid>
+
               <Grid item xs={12}>
-                <CurrentBalance mainApiData={mainApiData} coinApiData={coinApiData} />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TotalProfitLoss mainApiData={mainApiData} coinApiData={coinApiData} />
-              </Grid>
-
-              <Grid item xs={12}>
-                <AddTransactionButton />
+                <CryptoAssets
+                  mainApiData={mainApiData}
+                  coinApiData={coinApiData}
+                  handleSetLastUpdate={handleSetLastUpdate}
+                />
               </Grid>
             </Grid>
-
-            <Grid item xs={12}>
-              <CryptoAssets mainApiData={mainApiData} coinApiData={coinApiData} />
-            </Grid>
-          </Grid>
-        </Container>
-      </Page>
-    );
-  }
-
-  return <Page404 />;
+          </Container>
+        </Page>
+      )}
+    </>
+  );
 }

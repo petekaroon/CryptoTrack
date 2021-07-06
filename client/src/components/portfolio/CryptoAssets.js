@@ -1,17 +1,9 @@
-import faker from 'faker';
 import PropTypes from 'prop-types';
-import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import { useTheme } from '@material-ui/core/styles';
-import arrowIosForwardFill from '@iconify/icons-eva/arrow-ios-forward-fill';
 import {
-  Box,
   Card,
   Table,
-  Button,
-  Divider,
   TableRow,
   TableBody,
   TableCell,
@@ -31,12 +23,13 @@ import AssetMoreMenu from './AssetMoreMenu';
 
 CryptoAssets.propTypes = {
   mainApiData: PropTypes.array,
-  coinApiData: PropTypes.array
+  coinApiData: PropTypes.array,
+  handleSetLastUpdate: PropTypes.func
 };
 
 export default function CryptoAssets(props) {
   const theme = useTheme();
-  const { mainApiData, coinApiData } = props;
+  const { mainApiData, coinApiData, handleSetLastUpdate } = props;
 
   function getCurrentPrice(crypto) {
     return coinApiData.filter((coin) => coin.slug === crypto.name.toLowerCase()).map((coin) => coin.usd);
@@ -116,7 +109,7 @@ export default function CryptoAssets(props) {
                   </TableCell>
 
                   <TableCell align="right">
-                    <AssetMoreMenu />
+                    <AssetMoreMenu cryptoId={crypto.cryptoId} handleSetLastUpdate={handleSetLastUpdate} />
                   </TableCell>
                 </TableRow>
               ))}

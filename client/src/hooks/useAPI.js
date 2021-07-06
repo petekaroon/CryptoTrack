@@ -1,36 +1,45 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-export const useAPI = ({ url, method, contentType, credentials, body }) => {
+export const useAPI = ({ inputUrl, method, data, withCredentials }) => {
+  const [url, setUrl] = useState(inputUrl);
   const [statusCode, setStatusCode] = useState();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [apiData, setApiData] = useState();
+  const lastUpdate = new Date().toLocaleString();
 
   useEffect(() => {
     let isMounted = true;
-    fetch(url, { method, headers: { 'Content-Type': contentType }, credentials }, body)
-      .then((response) => {
-        if (response.ok) {
-          if (isMounted) setStatusCode(response.status);
-          return response.json();
+    const fetchData = async () => {
+      setError(null);
+      setLoading(true);
+
+      try {
+        const result = await axios({ url, method, data, withCredentials });
+
+        if (isMounted) {
+          setStatusCode(result.status);
+          setApiData(result.data);
         }
-        throw response;
-      })
-      .then((json) => {
-        if (isMounted) setApiData({ ...json });
-      })
-      .catch((error) => {
-        if (isMounted) setError(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      } catch (error) {
+        if (isMounted) {
+          setError(error.response);
+        }
+      }
+
+      if (isMounted) setLoading(false);
+    };
+
+    fetchData();
+
     return () => {
       isMounted = false;
     };
-  }, [url, method, contentType, body, credentials]);
+  }, [url]);
 
-  return { statusCode, loading, error, data: apiData };
+  return [{ statusCode, loading, error, data: apiData, lastUpdate }, setUrl];
 };
 
 export default { useAPI };

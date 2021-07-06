@@ -1,26 +1,34 @@
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import { paramCase } from 'change-case';
 import { useRef, useState } from 'react';
-import editFill from '@iconify/icons-eva/edit-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
-// routes
-// import { PATH_DASHBOARD } from '../../../../routes/paths';
+// api
+import { deleteCryptoAsset } from '../../api/Main';
 
 // ----------------------------------------------------------------------
 
 AssetMoreMenu.propTypes = {
-  onDelete: PropTypes.func,
-  productName: PropTypes.string
+  cryptoId: PropTypes.number,
+  handleSetLastUpdate: PropTypes.func
 };
 
-export default function AssetMoreMenu({ onDelete, productName }) {
+export default function AssetMoreMenu(props) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const { cryptoId, handleSetLastUpdate } = props;
+
+  const handleDelete = async () => {
+    try {
+      await deleteCryptoAsset(cryptoId);
+      handleSetLastUpdate();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -38,7 +46,7 @@ export default function AssetMoreMenu({ onDelete, productName }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={onDelete}>
+        <MenuItem onClick={handleDelete}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
