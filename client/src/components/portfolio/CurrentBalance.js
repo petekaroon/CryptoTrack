@@ -28,7 +28,7 @@ export default function PortfolioBalance(props) {
     <Card sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
       <Box sx={{ flexGrow: 1 }}>
         <Typography variant="h6">Current Balance</Typography>
-        <Typography variant="h3" color={currentBalance >= 0 ? 'primary' : 'error'}>
+        <Typography variant="h3" color="secondary">
           {fCurrency(currentBalance)}
         </Typography>
       </Box>

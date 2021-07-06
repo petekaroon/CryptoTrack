@@ -15,7 +15,7 @@ import { loadPortfolio } from '../api/Main';
 // ----------------------------------------------------------------------
 
 function convertCollection(obj) {
-  let keys = Object.keys(obj);
+  const keys = Object.keys(obj);
   return keys.map((key) => ({ slug: key, ...obj[key] }));
 }
 

@@ -69,9 +69,10 @@ router.get('/', verifyToken,
 router.get('/:cryptoId', verifyToken,
   catchError(async (req, res) => {
     const QUERY_TRANSACTIONS =
-      `SELECT id, date, buy_tx, unit_price, qty,tx_value
-        FROM transactions
-        WHERE user_id = $1 AND crypto_id = $2 
+      `SELECT t.id, c.name, c. symbol, t.date, t.buy_tx, t.unit_price, t.qty, t.tx_value
+        FROM transactions AS t
+        INNER JOIN cryptos AS c ON (t.crypto_id = c.id) 
+        WHERE t.user_id = $1 AND crypto_id = $2 
         ORDER BY date DESC`;
 
     try {
@@ -82,7 +83,9 @@ router.get('/:cryptoId', verifyToken,
         const outputTransactionsArr = queryResult.rows.map(resultObj => {
           return {
             transactionId: +resultObj['id'],
-            date: Date(resultObj['date']),
+            cryptoName: resultObj['name'],
+            cryptoSymbol: resultObj['symbol'],
+            date: resultObj['date'],
             type: resultObj['buy_tx'] ? 'buy' : 'sell',
             price: +resultObj['unit_price'],
             amount: +resultObj['qty'],
