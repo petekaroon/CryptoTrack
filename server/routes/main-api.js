@@ -80,7 +80,7 @@ router.get('/:cryptoId', verifyToken,
         res.user.id, +req.params.cryptoId);
 
       if (queryResult.rowCount > 0) {
-        const outputTransactionsArr = queryResult.rows.map(resultObj => {
+        const outpuCrytoListArr = queryResult.rows.map(resultObj => {
           return {
             transactionId: +resultObj['id'],
             cryptoName: resultObj['name'],
@@ -93,7 +93,7 @@ router.get('/:cryptoId', verifyToken,
           };
         });
 
-        res.status(200).json(outputTransactionsArr);
+        res.status(200).json(outpuCrytoListArr);
 
       } else {
         res.status(400).json({ message: 'No transaction with this cryptocurrency.' });
@@ -229,6 +229,28 @@ router.delete('/transactions/:transactionId', verifyToken,
       } else {
         res.status(400).json({ message: 'Bad Request' });
       }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  })
+);
+
+// @api {get} / : Load list of supported cryptocurrencies
+router.get('/cryptoList/all', verifyToken,
+  catchError(async (req, res) => {
+    const QUERY_TRANSACTIONS = `SELECT id, name, symbol FROM cryptos`;
+
+    try {
+      const queryResult = await dbQuery(QUERY_TRANSACTIONS);
+      console.log(queryResult);
+
+      if (queryResult.rowCount > 0) {
+        res.status(200).json(queryResult.rows);
+
+      } else {
+        res.status(400).json({ message: 'Bad request' });
+      }
+
     } catch (error) {
       res.status(500).json(error);
     }

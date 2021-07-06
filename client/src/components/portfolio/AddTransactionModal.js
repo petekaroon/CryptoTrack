@@ -40,15 +40,16 @@ const CATEGORY_OPTION = [
   { group: 'Accessories', classify: ['Shoes', 'Backpacks and bags', 'Bracelets', 'Face masks'] }
 ];
 
-const CRYPTO_LIST = [
-  { id: 1, name: 'Bitcoin', symbol: 'BTC' },
-  { id: 2, name: 'Ethereum', symbol: 'ETH' },
-  { id: 3, name: 'Tether', symbol: 'USDT' }
-];
-
 // ----------------------------------------------------------------------
 
-export default function AddTransactionModal({ isEdit, currentUser, onCancel }) {
+AddTransactionModal.propTypes = {
+  supportedCryptos: PropTypes.array
+};
+
+export default function AddTransactionModal(props, { isEdit, currentUser, onCancel }) {
+  const { supportedCryptos } = props;
+  console.log(supportedCryptos);
+
   const [transactionType, setTransactionType] = useState('buy');
 
   const handleTransactionTypeToggle = (event, newTransactionType) => {
@@ -113,7 +114,7 @@ export default function AddTransactionModal({ isEdit, currentUser, onCancel }) {
             <FormControl fullWidth>
               <InputLabel>Cryptocurrency</InputLabel>
               <Select label="Cryptocurrency" native {...getFieldProps('cryptocurrency')} value={values.category}>
-                {CRYPTO_LIST.map((crypto) => (
+                {supportedCryptos.map((crypto) => (
                   <option key={crypto.name} value={crypto.id}>
                     {`${crypto.name} (${crypto.symbol})`}
                   </option>

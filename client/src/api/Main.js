@@ -11,7 +11,10 @@ export async function loadPortfolio() {
   const mainApiResponse = await axios('http://localhost:8000/main-api', { withCredentials: true });
   const cryptoList = mainApiResponse.data.map((crypto) => crypto.name.toLowerCase());
   const coinApiResponse = await axios(getCoinGeckoUrl(cryptoList));
-  return { mainApiResponse, coinApiResponse };
+  const supportedCryptosResponse = await axios(`http://localhost:8000/main-api/cryptoList/all`, {
+    withCredentials: true
+  });
+  return { mainApiResponse, coinApiResponse, supportedCryptosResponse };
 }
 
 export async function deleteCryptoAsset(cryptoId) {

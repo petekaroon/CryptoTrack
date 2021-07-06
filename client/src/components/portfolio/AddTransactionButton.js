@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
 // Components
 import AddTransactionModal from './AddTransactionModal';
+
+// ----------------------------------------------------------------------
 
 function getModalStyle() {
   const top = 50;
@@ -31,7 +34,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function AddTransactionButton() {
+// ----------------------------------------------------------------------
+
+AddTransactionButton.propTypes = {
+  supportedCryptos: PropTypes.array
+};
+
+export default function AddTransactionButton(props) {
+  const { supportedCryptos } = props;
+
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
@@ -58,7 +69,7 @@ export default function AddTransactionButton() {
         style={{ alignItems: 'center', justifyContent: 'center' }}
       >
         <div style={modalStyle} className={classes.paper}>
-          <AddTransactionModal />
+          <AddTransactionModal supportedCryptos={supportedCryptos} />
         </div>
       </Modal>
     </div>

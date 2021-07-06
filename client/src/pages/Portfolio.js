@@ -23,10 +23,12 @@ export default function Portfolio() {
   const navigate = useNavigate();
   const [mainApiStatusCode, setMainApiStatusCode] = useState();
   const [coinApiStatusCode, setCoinApiStatusCode] = useState();
+  const [supportedCryptosStatusCode, setSupportedCryptosStatusCode] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [mainApiData, setMainApiData] = useState();
   const [coinApiData, setCoinApiData] = useState();
+  const [supportedCryptos, setSupportedCryptos] = useState();
   const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleString());
 
   const handleSetLastUpdate = () => {
@@ -40,13 +42,15 @@ export default function Portfolio() {
       setLoading(true);
 
       try {
-        const { mainApiResponse, coinApiResponse } = await loadPortfolio();
+        const { mainApiResponse, coinApiResponse, supportedCryptosResponse } = await loadPortfolio();
 
         if (isMounted) {
           setMainApiData(mainApiResponse.data);
           setCoinApiData(convertCollection(coinApiResponse.data));
+          setSupportedCryptos(supportedCryptosResponse.data);
           setMainApiStatusCode(mainApiResponse.status);
           setCoinApiStatusCode(coinApiResponse.status);
+          setSupportedCryptosStatusCode(supportedCryptosResponse.status);
         }
       } catch (error) {
         if (isMounted) {
@@ -66,11 +70,11 @@ export default function Portfolio() {
 
   return (
     <>
-      {(!mainApiData || !coinApiData) && <LoadingScreen />}
+      {(!mainApiData || !coinApiData || !supportedCryptos) && <LoadingScreen />}
       {error && error.status === 401 && <Navigate to="/auth/login" />}
       {error && error.status !== 401 && <Navigate to="/page404" />}
 
-      {mainApiStatusCode === 200 && coinApiStatusCode === 200 && (
+      {mainApiStatusCode === 200 && coinApiStatusCode === 200 && supportedCryptosStatusCode === 200 && (
         <Page title="Portfolio | CryptoTrack">
           <Container maxWidth="xl">
             <Grid container spacing={3}>
@@ -112,7 +116,7 @@ export default function Portfolio() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <AddTransactionButton />
+                  <AddTransactionButton supportedCryptos={supportedCryptos} />
                 </Grid>
               </Grid>
 
