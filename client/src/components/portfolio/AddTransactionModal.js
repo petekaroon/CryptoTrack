@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 import { Form, FormikProvider, useFormik } from 'formik';
+import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 import { LoadingButton, MobileDateTimePicker } from '@material-ui/lab';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Icon } from '@iconify/react';
@@ -38,9 +40,23 @@ const CATEGORY_OPTION = [
   { group: 'Accessories', classify: ['Shoes', 'Backpacks and bags', 'Bracelets', 'Face masks'] }
 ];
 
+const CRYPTO_LIST = [
+  { id: 1, name: 'Bitcoin', symbol: 'BTC' },
+  { id: 2, name: 'Ethereum', symbol: 'ETH' },
+  { id: 3, name: 'Tether', symbol: 'USDT' }
+];
+
 // ----------------------------------------------------------------------
 
 export default function AddTransactionModal({ isEdit, currentUser, onCancel }) {
+  const [transactionType, setTransactionType] = useState('buy');
+
+  const handleTransactionTypeToggle = (event, newTransactionType) => {
+    if (newTransactionType !== null) {
+      setTransactionType(newTransactionType);
+    }
+  };
+
   const AddTransactionModalSchema = Yup.object().shape({
     quantity: Yup.number().positive().required('Quantity is required'),
     pricePerCoin: Yup.number().positive().required('Price Per Coin is required'),
@@ -84,9 +100,9 @@ export default function AddTransactionModal({ isEdit, currentUser, onCancel }) {
               fullWidth
               size="small"
               color="primary"
-              // value={alignment}
+              value={transactionType}
               exclusive
-              // onChange={handleChange}
+              onChange={handleTransactionTypeToggle}
             >
               <ToggleButton value="buy">Buy</ToggleButton>
               <ToggleButton value="sell">Sell</ToggleButton>
@@ -97,14 +113,10 @@ export default function AddTransactionModal({ isEdit, currentUser, onCancel }) {
             <FormControl fullWidth>
               <InputLabel>Cryptocurrency</InputLabel>
               <Select label="Cryptocurrency" native {...getFieldProps('cryptocurrency')} value={values.category}>
-                {CATEGORY_OPTION.map((category) => (
-                  <optgroup key={category.group} label={category.group}>
-                    {category.classify.map((classify) => (
-                      <option key={classify} value={classify}>
-                        {classify}
-                      </option>
-                    ))}
-                  </optgroup>
+                {CRYPTO_LIST.map((crypto) => (
+                  <option key={crypto.name} value={crypto.id}>
+                    {`${crypto.name} (${crypto.symbol})`}
+                  </option>
                 ))}
               </Select>
             </FormControl>

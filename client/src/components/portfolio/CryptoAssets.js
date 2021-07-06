@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
   Card,
+  Link,
   Table,
   TableRow,
   TableBody,
@@ -29,6 +31,7 @@ CryptoAssets.propTypes = {
 
 export default function CryptoAssets(props) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { mainApiData, coinApiData, handleSetLastUpdate } = props;
 
   function getCurrentPrice(crypto) {
@@ -71,7 +74,9 @@ export default function CryptoAssets(props) {
               {mainApiData.map((crypto) => (
                 <TableRow key={crypto.cryptoId}>
                   <TableCell>
-                    <Typography fontWeight="fontWeightBold">{`${crypto.name} : ${crypto.symbol}`}</Typography>
+                    <Link color="secondary" component={RouterLink} to={`/${crypto.cryptoId}`}>
+                      <Typography fontWeight="fontWeightBold">{`${crypto.name} : ${crypto.symbol}`}</Typography>
+                    </Link>
                   </TableCell>
                   <TableCell align="right">{fCurrency(getCurrentPrice(crypto))}</TableCell>
                   <TableCell align="right">{`${fNumber(crypto.holdingQty)} ${crypto.symbol}`}</TableCell>

@@ -1,4 +1,4 @@
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 // material
 import { Container, Typography, Grid, Button } from '@material-ui/core';
@@ -17,6 +17,8 @@ function convertCollection(obj) {
 
 export default function IndividualCrypto() {
   const navigate = useNavigate();
+  const params = useParams();
+
   const [mainApiStatusCode, setMainApiStatusCode] = useState();
   const [coinApiStatusCode, setCoinApiStatusCode] = useState();
   const [loading, setLoading] = useState(false);
@@ -39,7 +41,7 @@ export default function IndividualCrypto() {
       setLoading(true);
 
       try {
-        const { mainApiResponse, coinApiResponse } = await loadIndividualCrypto(2); // Need to input real argument
+        const { mainApiResponse, coinApiResponse } = await loadIndividualCrypto(+params.crypto_id); // Need to input real argument
 
         if (isMounted) {
           setMainApiData(mainApiResponse.data);
