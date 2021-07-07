@@ -37,11 +37,12 @@ const useStyles = makeStyles((theme) => ({
 // ----------------------------------------------------------------------
 
 AddTransactionButton.propTypes = {
-  supportedCryptos: PropTypes.array
+  supportedCryptos: PropTypes.array,
+  handleSetLastUpdate: PropTypes.func
 };
 
 export default function AddTransactionButton(props) {
-  const { supportedCryptos } = props;
+  const { supportedCryptos, handleSetLastUpdate } = props;
 
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
@@ -52,6 +53,10 @@ export default function AddTransactionButton(props) {
   };
 
   const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
     setOpen(false);
   };
 
@@ -69,7 +74,12 @@ export default function AddTransactionButton(props) {
         style={{ alignItems: 'center', justifyContent: 'center' }}
       >
         <div style={modalStyle} className={classes.paper}>
-          <AddTransactionModal supportedCryptos={supportedCryptos} />
+          <AddTransactionModal
+            supportedCryptos={supportedCryptos}
+            handleSetLastUpdate={handleSetLastUpdate}
+            onClose={handleClose}
+            onCancel={handleCancel}
+          />
         </div>
       </Modal>
     </div>

@@ -242,7 +242,6 @@ router.get('/cryptoList/all', verifyToken,
 
     try {
       const queryResult = await dbQuery(QUERY_TRANSACTIONS);
-      console.log(queryResult);
 
       if (queryResult.rowCount > 0) {
         res.status(200).json(queryResult.rows);

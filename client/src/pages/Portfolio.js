@@ -70,9 +70,9 @@ export default function Portfolio() {
 
   return (
     <>
-      {(!mainApiData || !coinApiData || !supportedCryptos) && <LoadingScreen />}
       {error && error.status === 401 && <Navigate to="/auth/login" />}
       {error && error.status !== 401 && <Navigate to="/page404" />}
+      {(!mainApiData || !coinApiData || !supportedCryptos) && <LoadingScreen />}
 
       {mainApiStatusCode === 200 && coinApiStatusCode === 200 && supportedCryptosStatusCode === 200 && (
         <Page title="Portfolio | CryptoTrack">
@@ -116,7 +116,7 @@ export default function Portfolio() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <AddTransactionButton supportedCryptos={supportedCryptos} />
+                  <AddTransactionButton supportedCryptos={supportedCryptos} handleSetLastUpdate={handleSetLastUpdate} />
                 </Grid>
               </Grid>
 

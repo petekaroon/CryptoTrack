@@ -29,58 +29,77 @@ import {
 import { MIconButton } from '../@material-extend';
 // Components
 import { BuySellToggle } from './modal';
-
-// ----------------------------------------------------------------------
-
-const GENDER_OPTION = ['Men', 'Women', 'Kids'];
-
-const CATEGORY_OPTION = [
-  { group: 'Clothing', classify: ['Shirts', 'T-shirts', 'Jeans', 'Leather'] },
-  { group: 'Tailored', classify: ['Suits', 'Blazers', 'Trousers', 'Waistcoats'] },
-  { group: 'Accessories', classify: ['Shoes', 'Backpacks and bags', 'Bracelets', 'Face masks'] }
-];
+// Api
+import { addTransaction } from '../../api/Main';
 
 // ----------------------------------------------------------------------
 
 AddTransactionModal.propTypes = {
-  supportedCryptos: PropTypes.array
+  supportedCryptos: PropTypes.array,
+  handleSetLastUpdate: PropTypes.func,
+  onClose: PropTypes.func,
+  onCancel: PropTypes.func
 };
 
-export default function AddTransactionModal(props, { isEdit, currentUser, onCancel }) {
-  const { supportedCryptos } = props;
-  console.log(supportedCryptos);
+export default function AddTransactionModal(props) {
+  const { supportedCryptos, handleSetLastUpdate, onClose, isEdit, currentTransaction, onCancel } = props;
 
   const [transactionType, setTransactionType] = useState('buy');
+  const [transactionCrypto, setTransactionCrypto] = useState();
+  const [transactionQuantity, setTransactionQuantity] = useState();
+  const [transactionPrice, setTransactionPrice] = useState();
+  const [transactionTotal, setTransactionTotal] = useState(transactionQuantity * transactionPrice || 0);
 
   const handleTransactionTypeToggle = (event, newTransactionType) => {
     if (newTransactionType !== null) {
       setTransactionType(newTransactionType);
+      setFieldValue('type', newTransactionType);
     }
+  };
+
+  const handleQuantityChange = (event) => {
+    setTransactionQuantity(+event.target.value);
+    setTransactionTotal(+event.target.value * transactionPrice);
+    setFieldValue('quantity', +event.target.value);
+    setFieldValue('total', +event.target.value * transactionPrice);
+  };
+
+  const handlePriceChange = (event) => {
+    setTransactionPrice(+event.target.value);
+    setTransactionTotal(+event.target.value * transactionQuantity);
+    setFieldValue('pricePerCoin', +event.target.value);
+    setFieldValue('total', +event.target.value * transactionQuantity);
   };
 
   const AddTransactionModalSchema = Yup.object().shape({
     quantity: Yup.number().positive().required('Quantity is required'),
     pricePerCoin: Yup.number().positive().required('Price Per Coin is required'),
-    cryptocurrency: Yup.string().required('cryptocurrency is required'),
+    cryptoId: Yup.number().positive().required('cryptoId is required'),
     date: Yup.date()
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      type: 'buy',
-      cryptocurrency: currentUser?.cryptocurrency || '',
-      quantity: currentUser?.quantity || '',
-      pricePerCoin: currentUser?.pricePerCoin || '',
-      date: currentUser?.date || '',
-      total: currentUser?.total || '' // Need to calculate
+      type: currentTransaction?.type || 'buy',
+      cryptoId: currentTransaction?.cryptoId || 1,
+      quantity: currentTransaction?.quantity || '',
+      pricePerCoin: currentTransaction?.pricePerCoin || '',
+      date: currentTransaction?.date || '',
+      total: currentTransaction?.total || '' // Need to calculate
     },
     validationSchema: AddTransactionModalSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
-        console.log('success');
+        const { cryptoId, type, quantity, pricePerCoin, date, total } = values;
+        await addTransaction(cryptoId, type, quantity, pricePerCoin, date, total);
+        resetForm();
+        setSubmitting(false);
+        onClose();
+        handleSetLastUpdate();
       } catch (error) {
-        console.log(error);
+        setSubmitting(false);
+        setErrors(error);
       }
     }
   });
@@ -113,7 +132,7 @@ export default function AddTransactionModal(props, { isEdit, currentUser, onCanc
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel>Cryptocurrency</InputLabel>
-              <Select label="Cryptocurrency" native {...getFieldProps('cryptocurrency')} value={values.category}>
+              <Select label="Cryptocurrency" native {...getFieldProps('cryptoId')}>
                 {supportedCryptos.map((crypto) => (
                   <option key={crypto.name} value={crypto.id}>
                     {`${crypto.name} (${crypto.symbol})`}
@@ -124,7 +143,16 @@ export default function AddTransactionModal(props, { isEdit, currentUser, onCanc
           </Grid>
 
           <Grid item xs={6}>
-            <TextField fullWidth label="Quantity" {...getFieldProps('quantity')} />
+            <TextField
+              fullWidth
+              label="Quantity"
+              {...getFieldProps('quantity')}
+              InputProps={{ type: 'number' }}
+              onChange={handleQuantityChange}
+              value={transactionQuantity}
+              error={Boolean(touched.quantity && errors.quantity)}
+              helperText={touched.quantity && errors.quantity}
+            />
           </Grid>
 
           <Grid item xs={6}>
@@ -136,6 +164,10 @@ export default function AddTransactionModal(props, { isEdit, currentUser, onCanc
                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                 type: 'number'
               }}
+              onChange={handlePriceChange}
+              value={transactionPrice}
+              error={Boolean(touched.pricePerCoin && errors.pricePerCoin)}
+              helperText={touched.pricePerCoin && errors.pricePerCoin}
             />
           </Grid>
 
@@ -151,6 +183,7 @@ export default function AddTransactionModal(props, { isEdit, currentUser, onCanc
 
           <Grid item xs={12}>
             <TextField
+              disabled
               fullWidth
               label="Total"
               {...getFieldProps('total')}
@@ -158,6 +191,9 @@ export default function AddTransactionModal(props, { isEdit, currentUser, onCanc
                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                 type: 'number'
               }}
+              value={transactionTotal}
+              error={Boolean(touched.total && errors.total)}
+              helperText={touched.total && errors.total}
             />
           </Grid>
 

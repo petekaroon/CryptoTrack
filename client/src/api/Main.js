@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Portfolio Page
+// Load Portfolio Page
 export async function loadPortfolio() {
   function getCoinGeckoUrl(cryptoList) {
     const baseUrl = 'https://api.coingecko.com/api/v3/simple/price';
@@ -17,12 +17,13 @@ export async function loadPortfolio() {
   return { mainApiResponse, coinApiResponse, supportedCryptosResponse };
 }
 
+// Delete all transactions of the selected crypto asset
 export async function deleteCryptoAsset(cryptoId) {
   const response = await axios.delete(`http://localhost:8000/main-api/${cryptoId}`, { withCredentials: true });
   return response;
 }
 
-// IndividualCrypto Page
+// Load IndividualCrypto Page
 export async function loadIndividualCrypto(cryptoId) {
   const mainApiResponse = await axios(`http://localhost:8000/main-api/${cryptoId}`, { withCredentials: true });
   const cryptoQuery = mainApiResponse.data[0].cryptoName.toLowerCase();
@@ -32,6 +33,7 @@ export async function loadIndividualCrypto(cryptoId) {
   return { mainApiResponse, coinApiResponse };
 }
 
+// Delete a single transaction
 export async function deleteTransaction(transactionId) {
   const response = await axios.delete(`http://localhost:8000/main-api/transactions/${transactionId}`, {
     withCredentials: true
@@ -39,4 +41,22 @@ export async function deleteTransaction(transactionId) {
   return response;
 }
 
-export default { loadPortfolio, deleteCryptoAsset, loadIndividualCrypto, deleteTransaction };
+// Add a new transaction
+export async function addTransaction(cryptoId, type, quantity, pricePerCoin, date, total) {
+  const response = await axios.post(
+    `http://localhost:8000/main-api/transactions`,
+    {
+      cryptoId,
+      type,
+      quantity,
+      pricePerCoin,
+      date,
+      total
+    },
+    { withCredentials: true }
+  );
+
+  return response;
+}
+
+export default { loadPortfolio, deleteCryptoAsset, loadIndividualCrypto, deleteTransaction, addTransaction };
