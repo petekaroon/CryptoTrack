@@ -5,7 +5,13 @@ import { Container, Typography, Grid, Button } from '@material-ui/core';
 // components
 import Page from '../components/Page';
 import LoadingScreen from '../components/LoadingScreen';
-import { CurrentBalance, TotalProfitLoss, Transactions, CurrentPrice } from '../components/individual-crypto';
+import {
+  CurrentBalance,
+  TotalProfitLoss,
+  Transactions,
+  CurrentPrice,
+  AddTransactionButton
+} from '../components/individual-crypto';
 // api
 import { loadIndividualCrypto } from '../api/Main';
 
@@ -30,6 +36,8 @@ export default function IndividualCrypto() {
   const [currentPrice, setCurrentPrice] = useState();
   const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleString());
 
+  const cryptoId = +params.crypto_id;
+
   const handleSetLastUpdate = () => {
     setLastUpdate(new Date().toLocaleString());
   };
@@ -41,7 +49,7 @@ export default function IndividualCrypto() {
       setLoading(true);
 
       try {
-        const { mainApiResponse, coinApiResponse } = await loadIndividualCrypto(+params.crypto_id); // Need to input real argument
+        const { mainApiResponse, coinApiResponse } = await loadIndividualCrypto(cryptoId);
 
         if (isMounted) {
           setMainApiData(mainApiResponse.data);
@@ -111,16 +119,12 @@ export default function IndividualCrypto() {
 
               <Grid container item spacing={3} xs={12} md={3}>
                 <Grid item xs={12}>
-                  <Button
-                    fullWidth
-                    size="medium"
-                    variant="contained"
-                    onClick={() => {
-                      navigate('/auth/register');
-                    }}
-                  >
-                    + Add Transaction
-                  </Button>
+                  <AddTransactionButton
+                    cryptoId={cryptoId}
+                    cryptoName={cryptoName}
+                    cryptoSymbol={cryptoSymbol}
+                    handleSetLastUpdate={handleSetLastUpdate}
+                  />
                 </Grid>
 
                 <Grid item xs={12}>
@@ -138,8 +142,10 @@ export default function IndividualCrypto() {
 
               <Grid item xs={12} md={9}>
                 <Transactions
-                  cryptoSymbol={cryptoSymbol}
                   mainApiData={mainApiData}
+                  cryptoId={cryptoId}
+                  cryptoName={cryptoName}
+                  cryptoSymbol={cryptoSymbol}
                   handleSetLastUpdate={handleSetLastUpdate}
                 />
               </Grid>

@@ -59,4 +59,29 @@ export async function addTransaction(cryptoId, type, quantity, pricePerCoin, dat
   return response;
 }
 
-export default { loadPortfolio, deleteCryptoAsset, loadIndividualCrypto, deleteTransaction, addTransaction };
+// Edit an existing transaction
+export async function editTransaction(cryptoId, type, quantity, pricePerCoin, date, total, transactionId) {
+  const response = await axios.put(
+    `http://localhost:8000/main-api/transactions/${transactionId}`,
+    {
+      cryptoId,
+      type,
+      quantity,
+      pricePerCoin,
+      date,
+      total
+    },
+    { withCredentials: true }
+  );
+
+  return response;
+}
+
+export default {
+  loadPortfolio,
+  deleteCryptoAsset,
+  loadIndividualCrypto,
+  deleteTransaction,
+  addTransaction,
+  editTransaction
+};

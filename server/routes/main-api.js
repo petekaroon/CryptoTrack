@@ -144,7 +144,6 @@ router.post('/transactions', verifyToken,
     } = req.body;
 
     type = type === 'buy';
-    date = JSON.stringify(new Date());  // For testing only, to be removed
 
     const ADD_TRANSACTION =
       `INSERT INTO transactions (user_id, crypto_id, buy_tx, qty, 
@@ -181,7 +180,6 @@ router.put('/transactions/:transactionId', verifyToken,
     } = req.body;
 
     type = type === 'buy';
-    date = JSON.stringify(new Date());  // For testing only, to be removed
 
     const EDIT_TRANSACTION =
       `UPDATE transactions SET 
@@ -199,7 +197,6 @@ router.put('/transactions/:transactionId', verifyToken,
         type, quantity, pricePerCoin, date, total, +req.params.transactionId);
 
       if (queryResult.rowCount > 0) {
-        console.log(queryResult.rowCount);
         res.status(200).json({ message: 'Transaction edited' });
 
       } else {
@@ -234,6 +231,7 @@ router.delete('/transactions/:transactionId', verifyToken,
     }
   })
 );
+
 
 // @api {get} / : Load list of supported cryptocurrencies
 router.get('/cryptoList/all', verifyToken,

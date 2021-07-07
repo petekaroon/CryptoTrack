@@ -4,3 +4,4 @@ export { default as CurrentBalance } from './CurrentBalance';
 export { default as CurrentPrice } from './CurrentPrice';
 export { default as Transactions } from './Transactions';
 export { default as TransactionMoreMenu } from './TransactionMoreMenu';
+export { default as AddTransactionButton } from './AddTransactionButton';

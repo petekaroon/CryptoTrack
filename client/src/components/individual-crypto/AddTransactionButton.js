@@ -37,12 +37,14 @@ const useStyles = makeStyles((theme) => ({
 // ----------------------------------------------------------------------
 
 AddTransactionButton.propTypes = {
-  supportedCryptos: PropTypes.array,
+  cryptoId: PropTypes.number,
+  cryptoName: PropTypes.string,
+  cryptoSymbol: PropTypes.string,
   handleSetLastUpdate: PropTypes.func
 };
 
 export default function AddTransactionButton(props) {
-  const { supportedCryptos, handleSetLastUpdate } = props;
+  const { cryptoId, cryptoName, cryptoSymbol, handleSetLastUpdate } = props;
 
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
@@ -75,10 +77,13 @@ export default function AddTransactionButton(props) {
       >
         <div style={modalStyle} className={classes.paper}>
           <AddTransactionModal
-            supportedCryptos={supportedCryptos}
+            cryptoId={cryptoId}
+            cryptoName={cryptoName}
+            cryptoSymbol={cryptoSymbol}
             handleSetLastUpdate={handleSetLastUpdate}
             onClose={handleClose}
             onCancel={handleCancel}
+            isEdit={false}
           />
         </div>
       </Modal>

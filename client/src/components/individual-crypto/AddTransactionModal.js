@@ -16,23 +16,28 @@ import {
   ToggleButtonGroup
 } from '@material-ui/core';
 // Api
-import { addTransaction } from '../../api/Main';
+import { addTransaction, editTransaction } from '../../api/Main';
 
 // ----------------------------------------------------------------------
 
 AddTransactionModal.propTypes = {
-  supportedCryptos: PropTypes.array,
+  cryptoId: PropTypes.number,
+  cryptoName: PropTypes.string,
+  cryptoSymbol: PropTypes.string,
   handleSetLastUpdate: PropTypes.func,
   onClose: PropTypes.func,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
+  isEdit: PropTypes.bool,
+  currentTransaction: PropTypes.object
 };
 
 export default function AddTransactionModal(props) {
-  const { supportedCryptos, handleSetLastUpdate, onClose, isEdit, currentTransaction, onCancel } = props;
+  const { cryptoId, cryptoName, cryptoSymbol, handleSetLastUpdate, onClose, isEdit, currentTransaction, onCancel } =
+    props;
 
-  const [transactionType, setTransactionType] = useState('buy');
-  const [transactionQuantity, setTransactionQuantity] = useState('');
-  const [transactionPrice, setTransactionPrice] = useState('');
+  const [transactionType, setTransactionType] = useState(currentTransaction?.type || 'buy');
+  const [transactionQuantity, setTransactionQuantity] = useState(currentTransaction?.amount || '');
+  const [transactionPrice, setTransactionPrice] = useState(currentTransaction?.price || '');
   const [transactionTotal, setTransactionTotal] = useState(transactionQuantity * transactionPrice || 0);
 
   const handleTransactionTypeToggle = (event, newTransactionType) => {
@@ -66,18 +71,23 @@ export default function AddTransactionModal(props) {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      type: 'buy',
-      cryptoId: 1,
-      quantity: '',
-      pricePerCoin: '',
-      date: '',
-      total: ''
+      type: currentTransaction?.type || 'buy',
+      cryptoId,
+      quantity: currentTransaction?.amount || '',
+      pricePerCoin: currentTransaction?.price || '',
+      total: currentTransaction?.total || 0,
+      date: currentTransaction?.date || ''
     },
     validationSchema: AddTransactionModalSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
         const { cryptoId, type, quantity, pricePerCoin, date, total } = values;
-        await addTransaction(cryptoId, type, quantity, pricePerCoin, date, total);
+        if (!isEdit) {
+          await addTransaction(cryptoId, type, quantity, pricePerCoin, date, total);
+        } else {
+          await editTransaction(cryptoId, type, quantity, pricePerCoin, date, total, currentTransaction.transactionId);
+        }
+
         resetForm();
         setSubmitting(false);
         onClose();
@@ -116,12 +126,10 @@ export default function AddTransactionModal(props) {
           <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel>Cryptocurrency</InputLabel>
-              <Select label="Cryptocurrency" native {...getFieldProps('cryptoId')}>
-                {supportedCryptos.map((crypto) => (
-                  <option key={crypto.name} value={crypto.id}>
-                    {`${crypto.name} (${crypto.symbol})`}
-                  </option>
-                ))}
+              <Select label="Cryptocurrency" native disabled {...getFieldProps('cryptoId')}>
+                <option key={cryptoId} value={cryptoId}>
+                  {`${cryptoName} (${cryptoSymbol})`}
+                </option>
               </Select>
             </FormControl>
           </Grid>
@@ -156,7 +164,7 @@ export default function AddTransactionModal(props) {
           </Grid>
 
           <Grid item xs={12}>
-            <MobileDateTimePicker // Code from CalendarForm
+            <MobileDateTimePicker
               label="Date"
               value={values.start}
               inputFormat="dd/MM/yyyy hh:mm a"
@@ -190,7 +198,7 @@ export default function AddTransactionModal(props) {
               loading={isSubmitting}
               loadingIndicator="Loading..."
             >
-              Add Transaction
+              {!isEdit ? 'Add Transaction' : 'Edit Transaction'}
             </LoadingButton>
           </Grid>
 
