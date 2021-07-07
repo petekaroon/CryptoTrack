@@ -109,7 +109,7 @@ export default function IndividualCrypto() {
               <Grid item xs={12} sm={8}>
                 <Typography variant="h3">{cryptoName}</Typography>
                 <Typography sx={{ color: 'text.secondary' }} style={{ display: 'inline-block' }}>
-                  {cryptoSymbol} &nbsp; Price: &nbsp;
+                  {cryptoSymbol} &nbsp;&nbsp;|&nbsp;&nbsp; Price: &nbsp;
                 </Typography>
                 <Label variant="ghost" color="secondary">
                   {fCurrency(currentPrice)}
