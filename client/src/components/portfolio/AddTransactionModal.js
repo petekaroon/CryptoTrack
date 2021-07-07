@@ -28,9 +28,12 @@ AddTransactionModal.propTypes = {
 };
 
 export default function AddTransactionModal(props) {
-  const { supportedCryptos, handleSetLastUpdate, onClose, isEdit, currentTransaction, onCancel } = props;
+  const { supportedCryptos, handleSetLastUpdate, onClose, onCancel } = props;
+
+  const now = Date();
 
   const [transactionType, setTransactionType] = useState('buy');
+  const [transactionDate, setTransactionDate] = useState(now);
   const [transactionQuantity, setTransactionQuantity] = useState('');
   const [transactionPrice, setTransactionPrice] = useState('');
   const [transactionTotal, setTransactionTotal] = useState(transactionQuantity * transactionPrice || 0);
@@ -40,6 +43,11 @@ export default function AddTransactionModal(props) {
       setTransactionType(newTransactionType);
       setFieldValue('type', newTransactionType);
     }
+  };
+
+  const handleTransactionDateChange = (date) => {
+    setTransactionDate(date);
+    setFieldValue('date', date);
   };
 
   const handleQuantityChange = (event) => {
@@ -59,8 +67,7 @@ export default function AddTransactionModal(props) {
   const AddTransactionModalSchema = Yup.object().shape({
     quantity: Yup.number().positive().required('Quantity is required'),
     pricePerCoin: Yup.number().positive().required('Price Per Coin is required'),
-    cryptoId: Yup.number().positive().required('cryptoId is required'),
-    date: Yup.date()
+    date: Yup.date().required('Date is required')
   });
 
   const formik = useFormik({
@@ -89,7 +96,7 @@ export default function AddTransactionModal(props) {
     }
   });
 
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -156,11 +163,11 @@ export default function AddTransactionModal(props) {
           </Grid>
 
           <Grid item xs={12}>
-            <MobileDateTimePicker // Code from CalendarForm
+            <MobileDateTimePicker
               label="Date"
-              value={values.start}
+              value={transactionDate}
               inputFormat="dd/MM/yyyy hh:mm a"
-              onChange={(date) => setFieldValue('date', date)}
+              onChange={handleTransactionDateChange}
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </Grid>

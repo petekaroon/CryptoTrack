@@ -35,7 +35,10 @@ export default function AddTransactionModal(props) {
   const { cryptoId, cryptoName, cryptoSymbol, handleSetLastUpdate, onClose, isEdit, currentTransaction, onCancel } =
     props;
 
+  const now = Date();
+
   const [transactionType, setTransactionType] = useState(currentTransaction?.type || 'buy');
+  const [transactionDate, setTransactionDate] = useState(currentTransaction?.date || now);
   const [transactionQuantity, setTransactionQuantity] = useState(currentTransaction?.amount || '');
   const [transactionPrice, setTransactionPrice] = useState(currentTransaction?.price || '');
   const [transactionTotal, setTransactionTotal] = useState(transactionQuantity * transactionPrice || 0);
@@ -45,6 +48,11 @@ export default function AddTransactionModal(props) {
       setTransactionType(newTransactionType);
       setFieldValue('type', newTransactionType);
     }
+  };
+
+  const handleTransactionDateChange = (date) => {
+    setTransactionDate(date);
+    setFieldValue('date', date);
   };
 
   const handleQuantityChange = (event) => {
@@ -64,8 +72,7 @@ export default function AddTransactionModal(props) {
   const AddTransactionModalSchema = Yup.object().shape({
     quantity: Yup.number().positive().required('Quantity is required'),
     pricePerCoin: Yup.number().positive().required('Price Per Coin is required'),
-    cryptoId: Yup.number().positive().required('cryptoId is required'),
-    date: Yup.date()
+    date: Yup.date().required('Date is required')
   });
 
   const formik = useFormik({
@@ -75,7 +82,7 @@ export default function AddTransactionModal(props) {
       cryptoId,
       quantity: currentTransaction?.amount || '',
       pricePerCoin: currentTransaction?.price || '',
-      total: currentTransaction?.total || 0,
+      total: currentTransaction?.total || '',
       date: currentTransaction?.date || ''
     },
     validationSchema: AddTransactionModalSchema,
@@ -99,7 +106,7 @@ export default function AddTransactionModal(props) {
     }
   });
 
-  const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -166,9 +173,9 @@ export default function AddTransactionModal(props) {
           <Grid item xs={12}>
             <MobileDateTimePicker
               label="Date"
-              value={values.start}
+              value={transactionDate}
               inputFormat="dd/MM/yyyy hh:mm a"
-              onChange={(date) => setFieldValue('date', date)}
+              onChange={handleTransactionDateChange}
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </Grid>

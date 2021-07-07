@@ -1,12 +1,10 @@
 /* eslint-disable prefer-const */
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 // material
 import { Container, Typography, Grid, Button } from '@material-ui/core';
 // components
 import Page from '../components/Page';
-import Page404 from './Page404';
 import LoadingScreen from '../components/LoadingScreen';
 import { CurrentBalance, TotalProfitLoss, Overview, CryptoAssets, AddTransactionButton } from '../components/portfolio';
 // api
@@ -19,8 +17,17 @@ function convertCollection(obj) {
   return keys.map((key) => ({ slug: key, ...obj[key] }));
 }
 
+function getCurrentTime() {
+  const inputDateStr = new Date().toLocaleString('en-CA');
+  const dateArr = inputDateStr.split(' ');
+  const dateStr = dateArr[0].slice();
+  const timeStr = dateArr[1].slice();
+  const amPmStr = `${dateArr[2][0].toUpperCase()}${dateArr[2][2].toUpperCase()}`;
+
+  return `${dateStr} ${timeStr} ${amPmStr}`;
+}
+
 export default function Portfolio() {
-  const navigate = useNavigate();
   const [mainApiStatusCode, setMainApiStatusCode] = useState();
   const [coinApiStatusCode, setCoinApiStatusCode] = useState();
   const [supportedCryptosStatusCode, setSupportedCryptosStatusCode] = useState();
@@ -29,10 +36,10 @@ export default function Portfolio() {
   const [mainApiData, setMainApiData] = useState();
   const [coinApiData, setCoinApiData] = useState();
   const [supportedCryptos, setSupportedCryptos] = useState();
-  const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleString());
+  const [lastUpdate, setLastUpdate] = useState(getCurrentTime());
 
   const handleSetLastUpdate = () => {
-    setLastUpdate(new Date().toLocaleString());
+    setLastUpdate(getCurrentTime());
   };
 
   useEffect(() => {
@@ -86,17 +93,12 @@ export default function Portfolio() {
               <Grid container item xs={12} sm={4}>
                 <Grid item xs={12}>
                   <Typography paragraph align="center" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                    {`Last update: ${lastUpdate}`}
+                    Last update: &nbsp; {lastUpdate}
                   </Typography>
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Button
-                    fullWidth
-                    size="medium"
-                    variant="contained"
-                    onClick={() => setLastUpdate(new Date().toLocaleString())}
-                  >
+                  <Button fullWidth size="medium" variant="contained" onClick={handleSetLastUpdate}>
                     Update Latest Price
                   </Button>
                 </Grid>

@@ -23,8 +23,14 @@ export default function Transactions(props) {
   const theme = useTheme();
   const { cryptoId, cryptoName, cryptoSymbol, mainApiData, handleSetLastUpdate } = props;
 
-  function convertDate(dateInputString) {
-    return dateInputString.slice(0, 10);
+  function convertDate(inputDate) {
+    const inputDateStr = new Date(inputDate).toLocaleString('en-CA');
+    const dateArr = inputDateStr.split(' ');
+    const dateStr = dateArr[0].slice();
+    const timeStr = dateArr[1].slice(0, 5);
+    const amPmStr = `${dateArr[2][0].toUpperCase()}${dateArr[2][2].toUpperCase()}`;
+
+    return `${dateStr} ${timeStr} ${amPmStr}`;
   }
 
   return (

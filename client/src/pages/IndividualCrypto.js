@@ -9,16 +9,28 @@ import {
   CurrentBalance,
   TotalProfitLoss,
   Transactions,
-  CurrentPrice,
+  AvgBuyPrice,
   AddTransactionButton
 } from '../components/individual-crypto';
+import Label from '../components/Label';
 // api
 import { loadIndividualCrypto } from '../api/Main';
+import { fCurrency } from '../utils/formatNumber';
 
 // ----------------------------------------------------------------------
 function convertCollection(obj) {
   const keys = Object.keys(obj);
   return keys.map((key) => ({ slug: key, ...obj[key] }));
+}
+
+function getCurrentTime() {
+  const inputDateStr = new Date().toLocaleString('en-CA');
+  const dateArr = inputDateStr.split(' ');
+  const dateStr = dateArr[0].slice();
+  const timeStr = dateArr[1].slice();
+  const amPmStr = `${dateArr[2][0].toUpperCase()}${dateArr[2][2].toUpperCase()}`;
+
+  return `${dateStr} ${timeStr} ${amPmStr}`;
 }
 
 export default function IndividualCrypto() {
@@ -34,12 +46,12 @@ export default function IndividualCrypto() {
   const [cryptoName, setCryptoName] = useState();
   const [cryptoSymbol, setCryptoSymbol] = useState();
   const [currentPrice, setCurrentPrice] = useState();
-  const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleString());
+  const [lastUpdate, setLastUpdate] = useState(getCurrentTime());
 
   const cryptoId = +params.crypto_id;
 
   const handleSetLastUpdate = () => {
-    setLastUpdate(new Date().toLocaleString());
+    setLastUpdate(getCurrentTime());
   };
 
   useEffect(() => {
@@ -96,22 +108,22 @@ export default function IndividualCrypto() {
             <Grid container alignItems="flex-start" spacing={3}>
               <Grid item xs={12} sm={8}>
                 <Typography variant="h3">{cryptoName}</Typography>
-                <Typography sx={{ color: 'text.secondary' }}>{cryptoSymbol}</Typography>
+                <Typography sx={{ color: 'text.secondary' }} style={{ display: 'inline-block' }}>
+                  {cryptoSymbol} &nbsp; Price: &nbsp;
+                </Typography>
+                <Label variant="ghost" color="secondary">
+                  {fCurrency(currentPrice)}
+                </Label>
               </Grid>
 
               <Grid container item xs={12} sm={4}>
                 <Grid item xs={12}>
                   <Typography paragraph align="center" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                    {`Last update: ${lastUpdate}`}
+                    Last update: &nbsp; {lastUpdate}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Button
-                    fullWidth
-                    size="medium"
-                    variant="contained"
-                    onClick={() => setLastUpdate(new Date().toLocaleString())}
-                  >
+                  <Button fullWidth size="medium" variant="contained" onClick={handleSetLastUpdate}>
                     Update Latest Price
                   </Button>
                 </Grid>
@@ -128,15 +140,15 @@ export default function IndividualCrypto() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <CurrentPrice cryptoSymbol={cryptoSymbol} currentPrice={currentPrice} />
-                </Grid>
-
-                <Grid item xs={12}>
                   <CurrentBalance cryptoSymbol={cryptoSymbol} mainApiData={mainApiData} currentPrice={currentPrice} />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TotalProfitLoss mainApiData={mainApiData} currentPrice={currentPrice} />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <AvgBuyPrice mainApiData={mainApiData} />
                 </Grid>
               </Grid>
 
