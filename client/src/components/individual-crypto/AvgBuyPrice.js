@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 // material
 import { Box, Card, Typography } from '@material-ui/core';
 // utils
-import { fCurrency } from '../../utils/formatNumber';
+import { fCurrencyPrice } from '../../utils/formatNumber';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ export default function AvgBuyPrice(props) {
         <Typography variant="h6">Avg. Buy Price</Typography>
 
         <Typography variant="h3" color="secondary">
-          {fCurrency(getAvgBuyPrice(mainApiData))}
+          {fCurrencyPrice(getAvgBuyPrice(mainApiData))}
         </Typography>
       </Box>
     </Card>

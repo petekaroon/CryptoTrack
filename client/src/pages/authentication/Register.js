@@ -1,6 +1,6 @@
 // material
 import { experimentalStyled as styled } from '@material-ui/core/styles';
-import { Box, Card, Container, Typography } from '@material-ui/core';
+import { Box, Card, Container, Typography, Stack } from '@material-ui/core';
 // components
 import Page from '../../components/Page';
 import { MHidden } from '../../components/@material-extend';
@@ -40,23 +40,22 @@ export default function Register() {
     <RootStyle title="Register | CryptoTrack">
       <MHidden width="mdDown">
         <SectionStyle>
-          <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Track your crypto portfolio with ease
+          <Typography variant="h1" sx={{ px: 5 }} color="primary" align="right">
+            CryptoTrack
           </Typography>
-          <img alt="register" src="/static/illustrations/illustration_register.png" />
         </SectionStyle>
       </MHidden>
 
-      <Container>
+      <Container maxWidth="sm">
         <ContentStyle>
-          <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
+          <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
             <Box sx={{ flexGrow: 1 }}>
               <Typography variant="h4" gutterBottom>
-                Get started with CryptoTrack.
+                Get started with CryptoTrack
               </Typography>
               <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
             </Box>
-          </Box>
+          </Stack>
 
           <RegisterForm />
         </ContentStyle>

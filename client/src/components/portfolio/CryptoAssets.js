@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // material
-import { useTheme } from '@material-ui/core/styles';
 import {
   Card,
   Link,
@@ -15,7 +14,7 @@ import {
   TableContainer
 } from '@material-ui/core';
 // utils
-import { fCurrency, fPercent, fNumber } from '../../utils/formatNumber';
+import { fCurrency, fPercent, fNumber, fCurrencyPrice } from '../../utils/formatNumber';
 //
 import Label from '../Label';
 import Scrollbar from '../Scrollbar';
@@ -30,7 +29,6 @@ CryptoAssets.propTypes = {
 };
 
 export default function CryptoAssets(props) {
-  const theme = useTheme();
   const { mainApiData, coinApiData, handleSetLastUpdate } = props;
 
   function getCurrentPrice(crypto) {
@@ -77,14 +75,14 @@ export default function CryptoAssets(props) {
                       <Typography fontWeight="fontWeightBold">{`${crypto.name} : ${crypto.symbol}`}</Typography>
                     </Link>
                   </TableCell>
-                  <TableCell align="right">{fCurrency(getCurrentPrice(crypto))}</TableCell>
+                  <TableCell align="right">{fCurrencyPrice(getCurrentPrice(crypto))}</TableCell>
                   <TableCell align="right">{`${fNumber(crypto.holdingQty)} ${crypto.symbol}`}</TableCell>
                   <TableCell align="right">{fCurrency(getHoldingsValue(crypto))}</TableCell>
-                  <TableCell align="right">{fCurrency(crypto.avgBuyPrice)}</TableCell>
+                  <TableCell align="right">{fCurrencyPrice(crypto.avgBuyPrice)}</TableCell>
 
                   <TableCell align="right">
                     <Label
-                      variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                      variant="ghost"
                       color={
                         (getProfitLoss(crypto) === 0 && 'warning') ||
                         (getProfitLoss(crypto) < 0 && 'error') ||
@@ -99,7 +97,7 @@ export default function CryptoAssets(props) {
 
                   <TableCell align="right">
                     <Label
-                      variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                      variant="ghost"
                       color={
                         (getPercentageProfitLoss(crypto) === 0 && 'warning') ||
                         (getPercentageProfitLoss(crypto) < 0 && 'error') ||

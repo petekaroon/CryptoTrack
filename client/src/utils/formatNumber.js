@@ -5,6 +5,13 @@ import numeral from 'numeral';
 
 export function fCurrency(number) {
   if (number === 0) return numeral(number).format('$ 0');
+  if (Math.abs(number) < 1000) return numeral(number).format('$ 0,0.00');
+  return numeral(number).format('$ 0,0');
+}
+
+export function fCurrencyPrice(number) {
+  if (number === 0) return numeral(number).format('$ 0');
+  if (Math.abs(number) < 1) return numeral(number).format('$ 0,0.000000');
   if (Math.abs(number) < 10) return numeral(number).format('$ 0,0.0000');
   if (Math.abs(number) < 10000) return numeral(number).format('$ 0,0.00');
   return numeral(number).format('$ 0,0');
@@ -16,9 +23,9 @@ export function fPercent(number) {
 
 export function fNumber(number) {
   if (number === 0) return numeral(number).format('0');
-  if (Math.abs(number) < 0.01) return numeral(number).format('0,0.000000');
-  if (Math.abs(number) < 1) return numeral(number).format('0,0.0000');
-  if (Math.abs(number) < 1000) return numeral(number).format('0,0.00');
+  if (Math.abs(number) < 0.1) return numeral(number).format('0,0.000000');
+  if (Math.abs(number) < 10) return numeral(number).format('0,0.0000');
+  if (Math.abs(number) < 10000) return numeral(number).format('0,0.00');
   return numeral(number).format('0,0');
 }
 

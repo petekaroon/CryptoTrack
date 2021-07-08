@@ -4,8 +4,6 @@ import { useEffect, useMemo } from 'react';
 // material
 import { alpha, makeStyles, experimentalStyled as styled } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
-//
-import Logo from './Logo';
 
 // ----------------------------------------------------------------------
 
@@ -69,9 +67,7 @@ export default function LoadingScreen({ ...other }) {
           repeatDelay: 1,
           repeat: Infinity
         }}
-      >
-        <Logo sx={{ width: 64, height: 64 }} />
-      </motion.div>
+      />
 
       <Box
         component={motion.div}

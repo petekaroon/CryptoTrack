@@ -15,7 +15,7 @@ import {
 import Label from '../components/Label';
 // api
 import { loadIndividualCrypto } from '../api/Main';
-import { fCurrency } from '../utils/formatNumber';
+import { fCurrencyPrice } from '../utils/formatNumber';
 
 // ----------------------------------------------------------------------
 function convertCollection(obj) {
@@ -108,7 +108,7 @@ export default function IndividualCrypto() {
                   {cryptoSymbol} &nbsp;&nbsp;|&nbsp;&nbsp; Price: &nbsp;
                 </Typography>
                 <Label variant="filled" color="warning">
-                  {fCurrency(currentPrice)}
+                  {fCurrencyPrice(currentPrice)}
                 </Label>
               </Grid>
 

@@ -24,7 +24,7 @@ export default function Page404() {
   const navigate = useNavigate();
 
   return (
-    <RootStyle title="404 Page Not Found | Minimal-UI">
+    <RootStyle title="404 Page Not Found">
       <Container>
         <MotionContainer initial="initial" open>
           <Box sx={{ maxWidth: 480, margin: 'auto', textAlign: 'center' }}>

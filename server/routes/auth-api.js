@@ -11,6 +11,7 @@ const config = require('../lib/config');
 const jwt = require('jsonwebtoken');
 const tokenSecret = config.JWT_TOKEN_SECRET;
 
+
 // @api {post} /register : Add a new user
 router.post('/register',
   catchError(async (req, res) => {
@@ -79,6 +80,7 @@ router.post('/login',
   })
 );
 
+
 // @api {delete} /logout : Delete token cookie and logout
 router.delete('/logout',
   catchError(async (req, res) => {
@@ -112,7 +114,6 @@ function generateToken(res, id ,username) {
     expires: new Date(Date.now() + 86400000),
     secure: false,  // set to true if using https
     httpOnly: true,
-    // sameSite: true
   });
 }
 

@@ -1,6 +1,6 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
-import PortfolioLayout from '../layouts/portfolio';
+import Layout from '../layouts';
 
 // Pages
 import Login from '../pages/authentication/Login';
@@ -25,7 +25,7 @@ export default function Router() {
     // Portfolio Routes
     {
       path: '/',
-      element: <PortfolioLayout />,
+      element: <Layout />,
       children: [
         { path: '/', element: <Portfolio /> },
         { path: '/:crypto_id', element: <IndividualCrypto /> },

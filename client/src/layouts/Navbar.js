@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 // material
 import { alpha, experimentalStyled as styled } from '@material-ui/core/styles';
@@ -21,15 +22,9 @@ const ToolbarStyle = styled(Toolbar)(() => ({
 export default function DashboardNavbar() {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    fetch('http://localhost:8000/auth-api/logout', {
-      method: 'DELETE',
-      credentials: 'include'
-    }).then((response) => {
-      if (response.ok) {
-        navigate('/auth/login');
-      }
-    });
+  const handleLogout = async () => {
+    const response = await axios.delete('http://localhost:8000/auth-api/logout', { withCredentials: true });
+    if (response) navigate('/auth/login');
   };
 
   return (
