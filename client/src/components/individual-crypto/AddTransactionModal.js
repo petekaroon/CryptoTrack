@@ -28,14 +28,22 @@ AddTransactionModal.propTypes = {
   onClose: PropTypes.func,
   onCancel: PropTypes.func,
   isEdit: PropTypes.bool,
-  currentTransaction: PropTypes.object
+  currentTransaction: PropTypes.object,
+  now: PropTypes.object
 };
 
 export default function AddTransactionModal(props) {
-  const { cryptoId, cryptoName, cryptoSymbol, handleSetLastUpdate, onClose, isEdit, currentTransaction, onCancel } =
-    props;
-
-  const now = Date();
+  const {
+    cryptoId,
+    cryptoName,
+    cryptoSymbol,
+    handleSetLastUpdate,
+    onClose,
+    isEdit,
+    currentTransaction,
+    onCancel,
+    now
+  } = props;
 
   const [transactionType, setTransactionType] = useState(currentTransaction?.type || 'buy');
   const [transactionDate, setTransactionDate] = useState(currentTransaction?.date || now);
@@ -83,7 +91,7 @@ export default function AddTransactionModal(props) {
       quantity: currentTransaction?.amount || '',
       pricePerCoin: currentTransaction?.price || '',
       total: currentTransaction?.total || '',
-      date: currentTransaction?.date || ''
+      date: currentTransaction?.date || now
     },
     validationSchema: AddTransactionModalSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {

@@ -43,6 +43,7 @@ AddTransactionButton.propTypes = {
 
 export default function AddTransactionButton(props) {
   const { supportedCryptos, handleSetLastUpdate } = props;
+  const now = new Date();
 
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
@@ -79,6 +80,7 @@ export default function AddTransactionButton(props) {
             handleSetLastUpdate={handleSetLastUpdate}
             onClose={handleClose}
             onCancel={handleCancel}
+            now={now}
           />
         </div>
       </Modal>

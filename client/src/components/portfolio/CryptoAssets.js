@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 // material
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -31,7 +31,6 @@ CryptoAssets.propTypes = {
 
 export default function CryptoAssets(props) {
   const theme = useTheme();
-  const navigate = useNavigate();
   const { mainApiData, coinApiData, handleSetLastUpdate } = props;
 
   function getCurrentPrice(crypto) {

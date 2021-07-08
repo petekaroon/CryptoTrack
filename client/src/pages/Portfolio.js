@@ -31,7 +31,6 @@ export default function Portfolio() {
   const [mainApiStatusCode, setMainApiStatusCode] = useState();
   const [coinApiStatusCode, setCoinApiStatusCode] = useState();
   const [supportedCryptosStatusCode, setSupportedCryptosStatusCode] = useState();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [mainApiData, setMainApiData] = useState();
   const [coinApiData, setCoinApiData] = useState();
@@ -46,7 +45,6 @@ export default function Portfolio() {
     let isMounted = true;
     const fetchData = async () => {
       setError(null);
-      setLoading(true);
 
       try {
         const { mainApiResponse, coinApiResponse, supportedCryptosResponse } = await loadPortfolio();
@@ -64,8 +62,6 @@ export default function Portfolio() {
           setError(error.response);
         }
       }
-
-      if (isMounted) setLoading(false);
     };
 
     fetchData();

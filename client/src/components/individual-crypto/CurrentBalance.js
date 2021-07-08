@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Box, Card, Typography, Stack } from '@material-ui/core';
 // utils
 import { fNumber, fCurrency } from '../../utils/formatNumber';
+// components
+import Label from '../Label';
 
 // ----------------------------------------------------------------------
 
@@ -28,9 +30,9 @@ export default function CurrentBalance(props) {
         <Typography variant="h6">{`${cryptoSymbol} Balance`}</Typography>
 
         <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2, mb: 1 }}>
-          <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-            {`${fNumber(currentHoldings)} ${cryptoSymbol}`}
-          </Typography>
+          <Label variant="filled" color="secondary">
+            {fNumber(currentHoldings)} &nbsp; {cryptoSymbol}
+          </Label>
         </Stack>
 
         <Typography variant="h3" color="secondary">

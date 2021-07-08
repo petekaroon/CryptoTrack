@@ -39,7 +39,6 @@ export default function IndividualCrypto() {
 
   const [mainApiStatusCode, setMainApiStatusCode] = useState();
   const [coinApiStatusCode, setCoinApiStatusCode] = useState();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [mainApiData, setMainApiData] = useState();
   const [coinApiData, setCoinApiData] = useState();
@@ -58,7 +57,6 @@ export default function IndividualCrypto() {
     let isMounted = true;
     const fetchData = async () => {
       setError(null);
-      setLoading(true);
 
       try {
         const { mainApiResponse, coinApiResponse } = await loadIndividualCrypto(cryptoId);
@@ -77,8 +75,6 @@ export default function IndividualCrypto() {
           setError(error.response);
         }
       }
-
-      if (isMounted) setLoading(false);
     };
 
     fetchData();
@@ -86,7 +82,7 @@ export default function IndividualCrypto() {
     return () => {
       isMounted = false;
     };
-  }, [lastUpdate]);
+  }, [cryptoId, lastUpdate]);
 
   return (
     <>
@@ -111,7 +107,7 @@ export default function IndividualCrypto() {
                 <Typography sx={{ color: 'text.secondary' }} style={{ display: 'inline-block' }}>
                   {cryptoSymbol} &nbsp;&nbsp;|&nbsp;&nbsp; Price: &nbsp;
                 </Typography>
-                <Label variant="ghost" color="secondary">
+                <Label variant="filled" color="warning">
                   {fCurrency(currentPrice)}
                 </Label>
               </Grid>

@@ -24,13 +24,12 @@ AddTransactionModal.propTypes = {
   supportedCryptos: PropTypes.array,
   handleSetLastUpdate: PropTypes.func,
   onClose: PropTypes.func,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
+  now: PropTypes.object
 };
 
 export default function AddTransactionModal(props) {
-  const { supportedCryptos, handleSetLastUpdate, onClose, onCancel } = props;
-
-  const now = Date();
+  const { supportedCryptos, handleSetLastUpdate, onClose, onCancel, now } = props;
 
   const [transactionType, setTransactionType] = useState('buy');
   const [transactionDate, setTransactionDate] = useState(now);
@@ -77,7 +76,7 @@ export default function AddTransactionModal(props) {
       cryptoId: 1,
       quantity: '',
       pricePerCoin: '',
-      date: '',
+      date: now,
       total: ''
     },
     validationSchema: AddTransactionModalSchema,

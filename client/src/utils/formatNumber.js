@@ -15,7 +15,7 @@ export function fPercent(number) {
 }
 
 export function fNumber(number) {
-  if (number === 0) return numeral(number).format('$ 0');
+  if (number === 0) return numeral(number).format('0');
   if (Math.abs(number) < 0.01) return numeral(number).format('0,0.000000');
   if (Math.abs(number) < 1) return numeral(number).format('0,0.0000');
   if (Math.abs(number) < 1000) return numeral(number).format('0,0.00');
