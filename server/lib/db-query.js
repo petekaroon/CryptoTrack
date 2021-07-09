@@ -5,8 +5,8 @@ const isProduction = (config.NODE_ENV === "production");
 
 const CONNECTION = {
   connectionString: config.DATABASE_URL,
-  ssl: isProduction,
-  // ssl: { rejectUnauthorized: false },
+  // ssl: isProduction,
+  ssl: { rejectUnauthorized: false },
 };
 
 module.exports = {
