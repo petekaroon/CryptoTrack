@@ -40,9 +40,9 @@ export default function CryptoAssets(props) {
   }
 
   function getProfitLoss(crypto) {
-    // eslint-disable-next-line prettier/prettier
-    return getHoldingsValue(crypto) + (crypto.totalSellQty * crypto.avgSellPrice) -
-      (crypto.totalBuyQty * crypto.avgBuyPrice);
+    return (
+      getHoldingsValue(crypto) + crypto.totalSellQty * crypto.avgSellPrice - crypto.totalBuyQty * crypto.avgBuyPrice
+    );
   }
 
   function getPercentageProfitLoss(crypto) {

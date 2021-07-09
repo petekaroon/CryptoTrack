@@ -18,5 +18,5 @@ CREATE TABLE transactions (
   qty decimal(26,10) NOT NULL,
   unit_price decimal(20,10) NOT NULL,
   date timestamptz NOT NULL DEFAULT NOW(),
-  tx_value decimal(26,6) NOT NULL,
+  tx_value decimal(26,6) NOT NULL
 );

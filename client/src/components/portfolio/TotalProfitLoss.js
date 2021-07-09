@@ -41,13 +41,12 @@ export default function TotalProfitLoss(props) {
   }
 
   function getProfitLoss(crypto) {
-    // eslint-disable-next-line prettier/prettier
-    return getHoldingsValue(crypto) + (crypto.totalSellQty * crypto.avgSellPrice) -
-      (crypto.totalBuyQty * crypto.avgBuyPrice);
+    return (
+      getHoldingsValue(crypto) + crypto.totalSellQty * crypto.avgSellPrice - crypto.totalBuyQty * crypto.avgBuyPrice
+    );
   }
 
-  // eslint-disable-next-line prettier/prettier
-  const totalBuyValue = mainApiData.reduce((sum, crypto) => sum + (crypto.totalBuyQty * crypto.avgBuyPrice), 0);
+  const totalBuyValue = mainApiData.reduce((sum, crypto) => sum + crypto.totalBuyQty * crypto.avgBuyPrice, 0);
 
   const totalProfitLoss = mainApiData.reduce((sum, crypto) => sum + getProfitLoss(crypto), 0);
   const percentageTotalProfitLoss = 100 * (totalProfitLoss / totalBuyValue);
