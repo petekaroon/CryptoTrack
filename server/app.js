@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
-  origin: isProduction ? 'https://cryptotrack-2021.herokuapp.com/' : 'http://localhost:3111',
+  origin: isProduction ? 'https://cryptotrack-2021.herokuapp.com' : 'http://localhost:3111',
   credentials: true
 }));
 
