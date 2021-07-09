@@ -1,12 +1,16 @@
 {
-  "name": "crypto_portfolio",
+  "name": "cryptotrack-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "start": "npx nodemon server/app.js",
-    "heroku-postbuild": "npm install --production"
+    "build": "cd client/ && npm install && npm run build"
   },
+  "cacheDirectories": [
+    "node_modules",
+    "client/node_modules"
+  ],
   "engines": {
     "node": "14.15.4",
     "npm": "7.17.0"
