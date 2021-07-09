@@ -1,6 +1,9 @@
 import axios from 'axios';
+import config from '../utils/config';
 
-const baseUrl = 'http://localhost:8000';
+const isProduction = config.NODE_ENV === 'production';
+
+const baseUrl = isProduction ? 'https://cryptotrack-2021.herokuapp.com' : 'http://localhost:8000';
 
 // Load Portfolio Page
 export async function loadPortfolio() {
