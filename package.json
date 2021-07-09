@@ -4,13 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npx nodemon server/app.js",
-    "build": "cd client/ && npm install && npm run build"
+    "start": "npx nodemon server/app.js"
   },
-  "cacheDirectories": [
-    "node_modules",
-    "client/node_modules"
-  ],
   "engines": {
     "node": "14.15.4",
     "npm": "7.17.0"
