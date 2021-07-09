@@ -4,7 +4,12 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npx nodemon server/app.js"
+    "start": "npx nodemon server/app.js",
+    "heroku-postbuild": "npm install --production"
+  },
+  "engines": {
+    "node": "14.15.4",
+    "npm": "7.17.0"
   },
   "author": "",
   "license": "ISC",
