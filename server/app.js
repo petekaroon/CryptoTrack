@@ -14,14 +14,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
-  origin: isProduction ? 'https://cryptotrack-2021.herokuapp.com' : 'http://localhost:3111',
+  origin: isProduction ? 'https://cryptotrack-frontend.web.app' : 'http://localhost:3111',
   credentials: true
 }));
-
-app.use(express.static(path.join(__dirname, 'build')));
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
 
 app.use('/auth-api', authRoute);
 app.use('/main-api', mainRoute);
