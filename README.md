@@ -1,6 +1,6 @@
 # CryptoTrack
 
-> A web app to track your crypto assets investment. Cryptocurrency prices are updated in real time, powered by CoinGecko API.
+> A web app to track your crypto assets investment. Cryptocurrency prices are updated in real time, powered by [CoinGecko API](https://www.coingecko.com/en/api).
 
 # ![portfolio-page](./img/1-portfolio-page.png)
 
