@@ -9,4 +9,7 @@
 - Database - PostgreSQL
 - Frontend - React & Material-UI (with Minimal template)
 - API - [CoinGecko](https://www.coingecko.com/en/api)
-- Authentication - [JWT - JSON Web Token](https://jwt.io)
+- Authentication - [JSON Web Token (JWT)](https://jwt.io)
+
+# Setup
+Please refer to the [Setup Guide](./setup-guide.txt) for steps to setup in local development.
