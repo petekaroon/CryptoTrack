@@ -5,7 +5,7 @@
 # ![portfolio-page](./img/1-portfolio-page.png)
 
 ## Built with
-- Backend: Node.js
-- Database: Postgresql
-- Frontend: React & Material-Ui (with Minimal template)
-- API: CoinGecko
+- Backend - Node.js
+- Database - Postgresql
+- Frontend - React & Material-UI (with Minimal template)
+- API - CoinGecko
