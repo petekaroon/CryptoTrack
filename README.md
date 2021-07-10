@@ -5,9 +5,9 @@
 # ![portfolio-page](./img/1-portfolio-page.png)
 
 ## Built with
-- Backend - Node.js
+- Backend - Node.js & Express
+- Frontend - React & [Material-UI](https://material-ui.com) (with [Minimal template](https://material-ui.com/store/previews/minimal-dashboard/))
 - Database - PostgreSQL
-- Frontend - React & Material-UI (with Minimal template)
 - API - [CoinGecko](https://www.coingecko.com/en/api)
 - Authentication - [JSON Web Token (JWT)](https://jwt.io)
 
