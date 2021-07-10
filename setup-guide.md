@@ -2,7 +2,7 @@
 
 Steps for setting up in local development:
 
-1. Create a postgreSQL database with tables from `./db/schema.sql`
+1. Create a postgreSQL database with schema from `./db/schema.sql`
 
 2. Add a `.env` file to the project root folder with the following information
 ```

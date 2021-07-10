@@ -11,5 +11,5 @@
 - API - [CoinGecko](https://www.coingecko.com/en/api)
 - Authentication - [JSON Web Token (JWT)](https://jwt.io)
 
-# Setup
-Please refer to the [Setup Guide](./setup-guide.txt) for steps to setup in local development.
+## Setup
+Please refer to the [Setup Guide](./setup-guide.md) for steps to setup in local development.
