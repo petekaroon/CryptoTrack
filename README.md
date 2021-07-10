@@ -6,6 +6,6 @@
 
 ## Built with
 - Backend - Node.js
-- Database - Postgresql
+- Database - PostgreSQL
 - Frontend - React & Material-UI (with Minimal template)
-- API - CoinGecko
+- API - [CoinGecko](https://www.coingecko.com/en/api)
