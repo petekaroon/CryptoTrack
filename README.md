@@ -4,6 +4,9 @@
 
 # ![portfolio-page](./img/1-portfolio-page.png)
 
+## Motivation
+
+
 ## Built with
 - Backend - [Node.js](https://nodejs.org/en/) / [Express](https://expressjs.com)
 - Frontend - [React](https://reactjs.org) / [Material-UI](https://material-ui.com) / [Minimal theme](https://material-ui.com/store/previews/minimal-dashboard/)
@@ -13,3 +16,6 @@
 
 ## Setup
 Please refer to the [Setup Guide](./setup-guide.md) for steps to setup in local development.
+
+## License
+MIT
