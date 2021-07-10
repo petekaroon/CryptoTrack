@@ -19,7 +19,7 @@ Please refer to the [Setup Guide](./setup-guide.md) for steps to setup in local 
 
 ## Screenshots
 ![asset-details-page](./img/2-asset-details-page.png)
-![add-transaction-modal](./img/3-add-transaction-modal.png)
+![add-transaction-modal](./img/3-add-transaction-modal.pn)
 ![login-page](./img/4-login-page.png)
 
 ## License
