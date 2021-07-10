@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npx nodemon server/app.js"
+    "start": "npx nodemon server/app.js & (cd client && npm start)"
   },
   "engines": {
     "node": "14.15.4",
