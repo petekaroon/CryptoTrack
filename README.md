@@ -4,7 +4,7 @@ An easy-to-use web app to track your crypto assets investment. Cryptocurrency pr
 # ![portfolio-page](./img/1-portfolio-page.png)
 
 ## Description
-The aim of this project is to demonstrate my ability to create a CRUD application written in Javascript. The app is implemented through the use of RESTful APIs to record the user's cryptocurrency transactions. A third-party API from [CoinGecko](https://www.coingecko.com/en/api) is comsumed to provide real time cryptocurrency prices. [JSON Web Token (JWT)](https://jwt.io) and [bcrypt](https://www.npmjs.com/package/bcrypt) password encryption are used for auser authentication, which are the industry standards.
+The aim of this project is to demonstrate my ability to create a CRUD application written in Javascript. The app is implemented through the use of RESTful APIs to record the user's cryptocurrency transactions. A third-party API from [CoinGecko](https://www.coingecko.com/en/api) is comsumed to provide real time cryptocurrency prices. [JSON Web Token (JWT)](https://jwt.io) and [bcrypt](https://www.npmjs.com/package/bcrypt) password encryption are used for user authentication, which are considered the industry standards. 
 
 ## Tech
 - Backend - [Node.js](https://nodejs.org/en/) / [Express](https://expressjs.com)
